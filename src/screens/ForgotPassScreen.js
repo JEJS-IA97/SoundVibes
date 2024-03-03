@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
+import CustomModal from '../components/CustomModal'; 
 
-const SignUpScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const ForgotPassScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
-  const handleLogin = () => {
-    if (!validateInputs()) {
-      return;
-    }
-
-    console.log('Username:', username);
-    console.log('Password:', password);
-    console.log('Email:', email);
-    navigation.navigate('SignUp2');
-  };
 
   const handleSignIn = () => {
     navigation.navigate('SignIn');
+  };
+
+  const handleContinue = () => {
+    if (!validateInputs()) {
+      return;
+    }
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    navigation.navigate('ChangePass');
   };
 
   const isValidEmail = (email) => {
@@ -28,8 +29,8 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   const validateInputs = () => {
-    if (!username.trim() || !password.trim() || !email.trim()) {
-      setErrorMessage('All fields are required');
+    if (!email.trim()) {
+      setErrorMessage('Email are required');
       return false;
     }
 
@@ -41,39 +42,28 @@ const SignUpScreen = ({ navigation }) => {
     setErrorMessage('');
     return true;
   };
+  
 
   return (
     <ImageBackground
-      source={require('../assets/images/SignUp.jpg')}
+      source={require('../assets/images/Password.jpg')}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Sign Up</Text>
+        <Text style={styles.title}>Forgot Your</Text>
+        <Text style={styles.title}>Password</Text>
         <View style={styles.logoContainer}>
           <Image
             source={require('../assets/images/Logo.png')}
             style={styles.image}
           />
         </View>
-        <Text style={styles.title2}>Welcome</Text>
-        <Text style={styles.title3}>Create Your Account</Text>
+        <Text style={styles.title2}>Please enter the email address</Text>
+        <Text style={styles.title3}>you'd like your password reset</Text>
+        <Text style={styles.title4}>information sen to</Text>
         {errorMessage !== '' && (
           <Text style={styles.errorText}>{errorMessage}</Text>
         )}
-        <View style={styles.inputContainer}>
-          <Image
-            source={require('../assets/icon/user-icon.png')}
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor="white"
-            value={username}
-            onChangeText={(text) => setUsername(text)}
-          />
-        </View>
-        <View style={styles.line}></View>
         <View style={styles.inputContainer}>
           <Image
             source={require('../assets/icon/email-icon.png')}
@@ -81,40 +71,29 @@ const SignUpScreen = ({ navigation }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Email"
+            placeholder="Enter email address"
             placeholderTextColor="white"
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
         </View>
         <View style={styles.line}></View>
-        <View style={styles.inputContainer}>
-          <Image
-            source={require('../assets/icon/password-icon.png')}
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="white"
-            secureTextEntry
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-        </View>
-        <View style={styles.line}></View>
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#FF4500' }]}
-          onPress={handleLogin}
+        style={[styles.button, { backgroundColor: '#FF4500' }]}
+        onPress={handleContinue}
         >
-          <Text style={styles.buttonText}>SIGN UP</Text>
+          <Text style={styles.buttonText}>CONTINUE</Text>
         </TouchableOpacity>
-        <Text style={styles.signUpText}>
-          Already a member?{' '}
-          <TouchableOpacity onPress={handleSignIn}>
-            <Text style={styles.signUpLink}>Sign In</Text>
-          </TouchableOpacity>
-        </Text>
+        <TouchableOpacity onPress={handleSignIn}>
+          <Text style={styles.signUpLink}>Sign In</Text>
+        </TouchableOpacity>
+        <CustomModal
+          isVisible={isModalVisible}
+          onClose={handleCloseModal}
+          title="Reset Password"
+          description="An email wtih pasword reset instruction has been sent to your email address."
+          buttonText="CONTINUE"
+        />
       </View>
     </ImageBackground>
   );
@@ -138,34 +117,44 @@ const styles = StyleSheet.create({
     fontSize: 30,
     justifyContent: 'center',
     alignContent: 'center',
-    fontWeight: 'bold',
+    fontWeight: 'bold', 
     fontFamily: 'Roboto',
   },
   title2: {
     color: 'white',
-    fontSize: 30,
+    fontSize: 20,
     justifyContent: 'center',
     alignContent: 'center',
-    fontWeight: 'bold',
+    fontWeight: 'bold', 
     fontFamily: 'Roboto',
   },
   title3: {
     color: 'white',
-    fontSize: 17,
+    fontSize: 20,
+    justifyContent: 'center',
+    alignContent: 'center',
+    fontWeight: 'bold', 
+    fontFamily: 'Roboto',
+  },
+  title4: {
+    color: 'white',
+    fontSize: 20,
     justifyContent: 'center',
     alignContent: 'center',
     paddingBottom: 20,
-    fontWeight: 'bold',
+    fontWeight: 'bold', 
     fontFamily: 'Roboto',
   },
+
   inputContainer: {
     flexDirection: 'row',
     marginBottom: 1,
     width: '100%',
     justifyContent: 'center',
+    marginTop: 30,
   },
   icon: {
-    marginTop: 8,
+    marginTop:8,
     width: 20,
     height: 20,
   },
@@ -192,6 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: 'white',
     flex: 1,
+    
   },
   line: {
     height: 1,
@@ -206,20 +196,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
-    marginTop: 10,
+    marginTop: 30,
   },
   buttonText: {
     color: 'white',
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: 'bold', 
     fontFamily: 'Roboto',
   },
-  forgotPassword: {
-    color: 'white',
-    fontSize: 14,
-    marginTop: 30,
-    fontFamily: 'Roboto',
-  },
+ 
   signUpText: {
     color: 'white',
     fontSize: 14,
@@ -227,15 +212,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
   },
-  containerForgot: {
-    alignItems: 'flex-end',
-    marginLeft: 170,
-  },
   signUpLink: {
     color: '#FF4500',
     fontWeight: 'bold',
-    marginLeft: 5,
-    marginTop: 1,
+    marginLeft: 5, 
+    marginTop: 45,
     paddingTop: 15,
   },
   errorText: {
@@ -244,6 +225,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontFamily: 'Roboto',
   },
+
 });
 
-export default SignUpScreen;
+export default ForgotPassScreen;
