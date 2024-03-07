@@ -13,7 +13,7 @@ const SignInScreen = ({ navigation }) => {
       setErrorMessage('Username and password are required');
       return;
     }
-
+    navigation.navigate('Feed');
     setErrorMessage('Login failed. Please check your credentials.');
   };
 
@@ -22,7 +22,7 @@ const SignInScreen = ({ navigation }) => {
   };
 
   const handleSignUp = () => {
-    navigation.navigate('SignUp');
+    navigation.navigate('Alternative');
   };
 
   return (
