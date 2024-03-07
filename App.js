@@ -8,7 +8,8 @@ import SignUpScreen from './src/screens/SignUpScreen';
 import SignUpScreen2 from './src/screens/SignUpScreen2';
 import ForgotPassScreen from './src/screens/ForgotPassScreen';
 import ChangePassScreen from './src/screens/ChangePassScreen';
-
+import SignUpAlterScreen from './src/screens/SignUpAlterScreen';
+import FeedScreen from './src/screens/FeedScreen';
 
 
 
@@ -24,6 +25,8 @@ const App = () => {
         <Stack.Screen name="SignUp2" component={SignUpScreen2} />
         <Stack.Screen name="ForgotPass" component={ForgotPassScreen} />
         <Stack.Screen name="ChangePass" component={ChangePassScreen} />
+        <Stack.Screen name="Alternative" component={SignUpAlterScreen} />
+        <Stack.Screen name="Feed" component={FeedScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
