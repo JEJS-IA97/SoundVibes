@@ -10,6 +10,7 @@ import ForgotPassScreen from './src/screens/ForgotPassScreen';
 import ChangePassScreen from './src/screens/ChangePassScreen';
 import SignUpAlterScreen from './src/screens/SignUpAlterScreen';
 import FeedScreen from './src/screens/FeedScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 
 
@@ -27,6 +28,7 @@ const App = () => {
         <Stack.Screen name="ChangePass" component={ChangePassScreen} />
         <Stack.Screen name="Alternative" component={SignUpAlterScreen} />
         <Stack.Screen name="Feed" component={FeedScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
