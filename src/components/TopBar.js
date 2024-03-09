@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const TopBar = () => {
+const TopBar = ({ navigation }) => {
   const userProfileImage = require('../assets/images/John.jpg');
 
   return (
@@ -18,7 +18,7 @@ const TopBar = () => {
         end={{ x: 1, y: 0 }}
         style={styles.userProfileContainer}
       >
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <Image source={userProfileImage} style={styles.userProfileImage} />
         </TouchableOpacity>
       </LinearGradient>
