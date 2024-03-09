@@ -11,7 +11,7 @@ import ChangePassScreen from './src/screens/ChangePassScreen';
 import SignUpAlterScreen from './src/screens/SignUpAlterScreen';
 import FeedScreen from './src/screens/FeedScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-
+import UserScreen from './src/screens/UserScreen';
 
 
 const Stack = createStackNavigator();
@@ -29,6 +29,7 @@ const App = () => {
         <Stack.Screen name="Alternative" component={SignUpAlterScreen} />
         <Stack.Screen name="Feed" component={FeedScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="User" component={UserScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -15,15 +15,7 @@ const ProfileScreen = ({ navigation }) => {
     { id: 8, image: require('../assets/images/post8.jpg') },
     { id: 9, image: require('../assets/images/post9.jpg') },     
   ];
-
-  const renderPost = ({ item }) => {
-    return (
-      <TouchableOpacity style={styles.postItem}>
-        <Image source={item.image} style={styles.postImage} />
-      </TouchableOpacity>
-    );
-  };
-
+  
   return (
     <View style={styles.container}>
       <LinearGradient

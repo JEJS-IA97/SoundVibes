@@ -11,7 +11,7 @@ const FeedScreen = ({ navigation }) => {
       colors={['rgba(135, 206, 235, 0.4)', 'rgba(255, 69, 0, 0.4)']}
       style={styles.container}
     >
-      <TopBar/>
+      <TopBar navigation={navigation}/>
       <ScrollView>
         <Publication imagen="url_imagen_1" descripcion="Descripción de la publicación 1" />
         <Publication imagen="url_imagen_2" descripcion="Descripción de la publicación 2" />
