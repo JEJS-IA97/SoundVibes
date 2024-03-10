@@ -12,7 +12,9 @@ import SignUpAlterScreen from './src/screens/SignUpAlterScreen';
 import FeedScreen from './src/screens/FeedScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import UserScreen from './src/screens/UserScreen';
-
+import EditProfileScreen from './src/screens/EditProfileScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import ChangePassScreen2 from './src/screens/ChangePassScreen2';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +32,9 @@ const App = () => {
         <Stack.Screen name="Feed" component={FeedScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="User" component={UserScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="ChangePass2" component={ChangePassScreen2} />
       </Stack.Navigator>
     </NavigationContainer>
   );

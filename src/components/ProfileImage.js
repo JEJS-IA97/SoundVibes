@@ -13,7 +13,7 @@ const ProfileImage = ({ navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.navigate('Feed')}
           >
-            <Icon name="arrow-back" size={24} color="black" />
+            <Icon name="return-up-back-outline" size={24} color="black" />
           </TouchableOpacity>
           <LinearGradient
             colors={['rgba(19, 84, 122, 0.8)', 'rgba(128, 208, 199, 0.8)']}
@@ -34,12 +34,11 @@ const ProfileImage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 16
   },
   backButton: {
-    position: 'absolute',
-    top: 1,
-    left: 16,
+    position: 'fixed',
+    top: 15,
+    right: 160,
     zIndex: 1,
   },
   profileContainer: {
@@ -52,7 +51,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 100,
     overflow: 'hidden',
-    marginBottom: 10,
   },
   profileImage: {
     width: '100%',
@@ -66,15 +64,15 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 16,
     color: 'gray',
-    marginBottom: 10
   },
   cameraButton: {
-    position: 'absolute',
-    bottom: 70,
-    right: 120,
+    position: 'fixed',
+    bottom: 50,
+    right: -65,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 20,
-    padding: 8,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
 
