@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
+    marginTop: 15,
     marginBottom: 16,
   },
   statItem: {
@@ -100,6 +101,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     paddingHorizontal: 10,
+    marginBottom: 16
   },
   postItem: {
     width: '32%',

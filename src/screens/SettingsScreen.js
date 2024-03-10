@@ -5,7 +5,7 @@ import ProfileImage from '../components/ProfileImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
-const UserScreen = ({ navigation }) => {
+const SettingsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -31,20 +31,16 @@ const UserScreen = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditProfile')}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ChangePass2')}>
               <Icon name="create-outline" size={24} color="black" />
-              <Text style={styles.buttonText}>Edit Profile</Text>
+              <Text style={styles.buttonText}>Change Password</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Settings')}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
               <Icon name="settings-outline" size={24} color="black" />
-              <Text style={styles.buttonText}>Settings</Text>
+              <Text style={styles.buttonText}>Change Language</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity style={styles.button}>
-              <Icon name="log-out-outline" size={24} color="black" />
-              <Text style={styles.buttonText}>Sign Out</Text>
-            </TouchableOpacity>
           </View>       
           <View style={styles.logoContainer}>
             <Image
@@ -124,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserScreen;
+export default SettingsScreen;
