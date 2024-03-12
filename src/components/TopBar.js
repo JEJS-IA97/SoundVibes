@@ -7,6 +7,7 @@ const TopBar = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+  
       <Image
         source={require('../assets/images/Logo.png')}
         style={styles.logo}
@@ -14,8 +15,6 @@ const TopBar = ({ navigation }) => {
 
       <LinearGradient
         colors={['#87CEEB', '#FFA500', '#FF4500']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
         style={styles.userProfileContainer}
       >
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
@@ -46,11 +45,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     borderWidth: 2, 
-    borderColor: 'transparent', 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   userProfileImage: {
-    width: '100%',
-    height: '100%',
+    width: 30,
+    height: 30,
     resizeMode: 'cover',
     borderRadius: 18, 
   },

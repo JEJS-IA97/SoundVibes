@@ -16,7 +16,7 @@ const ProfileImage = ({ navigation }) => {
             <Icon name="return-up-back-outline" size={24} color="black" />
           </TouchableOpacity>
           <LinearGradient
-            colors={['rgba(19, 84, 122, 0.8)', 'rgba(128, 208, 199, 0.8)']}
+            colors={['#87CEEB', '#FFA500', '#FF4500']}
             style={styles.profileImageContainer}
           >
             <Image source={userProfileImage} style={styles.profileImage} />
@@ -51,11 +51,14 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 100,
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileImage: {
-    width: '100%',
-    height: '100%',
+    width: 180,
+    height: 180,
     resizeMode: 'cover',
+    borderRadius: 120,
   },
   name: {
     fontSize: 24,
@@ -66,13 +69,17 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   cameraButton: {
-    position: 'fixed',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 35,
+    height: 35,
+    position: 'center',
     bottom: 50,
     right: -65,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: '#87CEEB',
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: 'rgba(0, 0, 0, 0.5)',
+    borderColor: 'white',
   },
 });
 
