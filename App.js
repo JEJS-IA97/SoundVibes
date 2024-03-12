@@ -15,6 +15,12 @@ import UserScreen from './src/screens/UserScreen';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ChangePassScreen2 from './src/screens/ChangePassScreen2';
+import NotificationsScreen from './src/screens/NotificationsScreen';
+import FavoriteScreen from './src/screens/FavoriteScreen';
+import SearchScreen from './src/screens/SearchScreen';
+import UserScreen2 from './src/screens/UserScreen2';
+import UserScreen3 from './src/screens/UserScreen3';
+import UserScreen4 from './src/screens/UserScreen4';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +41,12 @@ const App = () => {
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="ChangePass2" component={ChangePassScreen2} />
+        <Stack.Screen name="Favorite" component={FavoriteScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Notification" component={NotificationsScreen} />
+        <Stack.Screen name="User2" component={UserScreen2} />
+        <Stack.Screen name="User3" component={UserScreen3} />
+        <Stack.Screen name="User4" component={UserScreen4} />
       </Stack.Navigator>
     </NavigationContainer>
   );

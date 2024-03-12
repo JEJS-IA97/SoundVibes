@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
   profileContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -88,7 +87,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     marginLeft: 35,
-    marginRight: 35
+    marginRight: 35,
+    marginTop: 15,
   },
   button: {
     flexDirection: 'row',
@@ -113,8 +113,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '11%',
-    marginRight: '11%'
+    marginLeft: '7%',
   },
   image: {
     width: 200,
