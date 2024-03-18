@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Modal } from 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
+const Feed = ({ title, year, genre, user, photo, rectangleImage, time }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const likeButtonIcon = liked ? 'heart' : 'heart-outline';
+  const likeButtonColor = liked ? 'red' : 'black';
 
   const userURLs = {
     'John Lennon': {
@@ -12,20 +15,20 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
       youtube: 'https://www.youtube.com/playlist?list=PLiN-7mukU_RE21iD9opzXGPC-VSWfu92Z',
       soundcloud: 'https://soundcloud.com/user-79534953/the-beatles-abbey-road-full-album?si=1ccb676c1ce743439c609fdb9a66f9a8&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
     },
-    'Christopher Martin': {
-      spotify: 'https://open.spotify.com/intl-es/track/7LVHVU3tWfcxj5aiPFEW4Q?si=d4e9935bcadb43d6',
-      youtube: 'https://www.youtube.com/watch?v=k4V3Mo61fJM&ab_channel=Coldplay',
-      soundcloud: 'https://soundcloud.com/user-956334953/coldplay-fix-you?si=4558e8602920492dbd648665c3375b60&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+    'Ariana Grande': {
+      spotify: 'https://open.spotify.com/intl-es/album/5EYKrEDnKhhcNxGedaRQeK?si=Y6Q90KAgQ26UnWpSFjJTPw',
+      youtube: 'https://youtube.com/playlist?list=PLT5kE8dBKiP495x-xlAXCQ7jlmHvGg5bu&feature=shared',
+      soundcloud: 'https://soundcloud.com/arianagrande/sets/eternal-sunshine-238265361?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
     },
-    'Billie Armstrong': {
-      spotify: 'https://open.spotify.com/intl-es/track/5GorCbAP4aL0EJ16frG2hd?si=0cf98df659ff4af2',
-      youtube: 'https://www.youtube.com/watch?v=Soa3gO7tL-c&ab_channel=GreenDay',
-      soundcloud: 'https://soundcloud.com/greenday/boulevard-of-broken-dreams-3?si=f81a942e76674c339f3ad1343a5a29cd&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+    'Taylor Swift': {
+      spotify: 'https://open.spotify.com/intl-es/album/151w1FgRZfnKZA9FEcg9Z3?si=FMq6EodoQCK1jG1HFq0dyw',
+      youtube: 'https://youtube.com/playlist?list=OLAK5uy_lw2-Cu3aRY2Tkfi28_79m05SkBF_tlufg&feature=shared',
+      soundcloud: 'https://soundcloud.com/taylorswiftofficial/sets/midnights-5?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
     },
-    'Brandon Flowers': {
-      spotify: 'https://open.spotify.com/intl-es/track/2aZ2Co4NeQRsqWcU930zHT?si=3702bc44a11e42bd',
-      youtube: 'https://www.youtube.com/watch?v=X4YK-DEkvcw&ab_channel=TheKillersVEVO',
-      soundcloud: 'https://soundcloud.com/thekillers/shot-at-the-night-album?si=6a0c46a8025f4ed2b8efb3b3d72523b9&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+    'Harry Styles': {
+      spotify: 'https://open.spotify.com/intl-es/album/5r36AJ6VOJtp00oxSkBZ5h?si=372Vvuc2Stu0Hg5-0UAzcg',
+      youtube: 'https://youtube.com/playlist?list=PLxA687tYuMWgWbfUsntXDsn5HgOz90ka-&feature=shared',
+      soundcloud: 'https://soundcloud.com/harrystyles/sets/harrys-house-2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
     },
   };
 
@@ -44,7 +47,7 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
   };
 
   const renderOptions = () => {
-    if (user === 'Brandon Flowers' || user === 'Christopher Martin' || user === 'Billie Armstrong') {
+    if (user === 'Harry Styles' || user === 'Taylor Swift' || user === 'Ariana Grande') {
       return (
         <View style={styles.optionsContainer}>
           <TouchableOpacity onPress={() => console.log('Hide Post')}>
@@ -120,6 +123,23 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
           <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
         </TouchableOpacity>
       </View>     
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setLiked(!liked)}
+        >
+          <Icon name={likeButtonIcon} size={20} color={likeButtonColor} />
+          <Text style={styles.buttonText}>Like</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Icon name="chatbubble-outline" size={20} color="black" />
+          <Text style={styles.buttonText}>Comment</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Icon name="share-outline" size={20} color="black" />
+          <Text style={styles.buttonText}>Share</Text>
+        </TouchableOpacity>
+      </View>      
       <Modal
         animationType="slide"
         transparent={true}
@@ -238,6 +258,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FF4500',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buttonText: {
+    marginLeft: 5,
+  },
 });
 
-export default Result;
+export default Feed;
