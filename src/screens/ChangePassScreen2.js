@@ -1,18 +1,33 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Importamos AsyncStorage
 import ProfileImage from '../components/ProfileImage';
+import CustomModal from '../components/CustomModal'; 
 
 const ChangePassScreen2 = ({ navigation }) => {
   const [password, setPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [repeatPass, setRepeatPass] = useState('')
   const [errorMessage, setErrorMessage] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const savePasswordToStorage = async (password) => {
+    try {
+      await AsyncStorage.setItem('password', password); // Guardamos la contraseña en el almacenamiento
+    } catch (error) {
+      console.error('Error saving password:', error);
+    }
+  };
 
   const validateInputs = () => {
     if (!password.trim() || !newPassword.trim() || !repeatPass.trim()) {
       setErrorMessage('All fields are required');
+      return false;
+    }
+
+    if (newPassword !== repeatPass) {
+      setErrorMessage('Passwords do not match');
       return false;
     }
 
@@ -24,7 +39,15 @@ const ChangePassScreen2 = ({ navigation }) => {
     if (!validateInputs()) {
       return;
     }
-  }
+    
+    savePasswordToStorage(newPassword); // Guardamos la nueva contraseña en el almacenamiento
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    navigation.navigate('Settings'); 
+  };
   
   return (
     <View style={styles.container}>
@@ -47,6 +70,7 @@ const ChangePassScreen2 = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Enter your current password"
                 placeholderTextColor="black"
+                secureTextEntry={true}
                 value={password}
                 onChangeText={(text) => setPassword(text)}
               />
@@ -58,6 +82,7 @@ const ChangePassScreen2 = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Enter your new password"
                 placeholderTextColor="black"
+                secureTextEntry={true}
                 value={newPassword}
                 onChangeText={(text) => setNewPassword(text)}
               />
@@ -70,6 +95,7 @@ const ChangePassScreen2 = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Repeat your new password"
                 placeholderTextColor="black"
+                secureTextEntry={true}
                 value={repeatPass}
                 onChangeText={(text) => setRepeatPass(text)}
               />
@@ -77,9 +103,9 @@ const ChangePassScreen2 = ({ navigation }) => {
             <View style={styles.line}></View>
 
             <View style={styles.buttonContainer}>
-            <TouchableOpacity
+              <TouchableOpacity
                 style={[styles.button, { backgroundColor: 'gray' }]}
-                onPress={handleContinue}
+                onPress={() => navigation.goBack()}
               >
                 <Text style={styles.buttonText}>CANCEL</Text>
               </TouchableOpacity>
@@ -98,11 +124,21 @@ const ChangePassScreen2 = ({ navigation }) => {
               style={styles.image}
             />
           </View> 
+          {isModalVisible && (
+            <CustomModal
+              isVisible={isModalVisible}
+              onClose={handleCloseModal}
+              title="Password Changed!"
+              description="Your password has been changed successfully."
+              buttonText="CONTINUE"
+            />
+          )}
         </ScrollView>
       </LinearGradient>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

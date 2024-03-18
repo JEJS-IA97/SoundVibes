@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import ProfileImage from '../components/ProfileImage';
+import CustomModal from '../components/CustomModal'; 
 
 const SignUpScreen2 = ({ navigation }) => {
   const [username, setUsername] = useState('')
@@ -14,6 +15,7 @@ const SignUpScreen2 = ({ navigation }) => {
   const [telefono, setTelefono] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -56,7 +58,14 @@ const SignUpScreen2 = ({ navigation }) => {
     const phonePattern = /^[0-9]+$/;
     if (!phonePattern.test(telefono)) {
       return;
-    }};
+    }
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    navigation.navigate('User'); 
+  };
 
   
   return (
@@ -144,10 +153,10 @@ const SignUpScreen2 = ({ navigation }) => {
             <View style={styles.line}></View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Phone</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your email"
+                placeholder="Enter your phone"
                 placeholderTextColor="black"
                 value={telefono}
                 onChangeText={(text) => setTelefono(text.replace(/[^0-9]/g, ''))}
@@ -170,8 +179,16 @@ const SignUpScreen2 = ({ navigation }) => {
                 <Text style={styles.buttonText}>SAVE</Text>
               </TouchableOpacity>
             </View>
-
           </View>
+          {isModalVisible && (
+        <CustomModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        title="Update Successful"
+        description="Your account has been successfully updated."
+        buttonText="CONTINUE"
+      />
+      )}
         </ScrollView>
       </LinearGradient>
     </View>

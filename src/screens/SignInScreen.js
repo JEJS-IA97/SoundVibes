@@ -1,22 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignInScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setErrorMessage('');
-
+  
     if (username.trim() === '' || password.trim() === '') {
       setErrorMessage('Username and password are required');
       return;
     }
-    navigation.navigate('Feed');
-    setErrorMessage('Login failed. Please check your credentials.');
+  
+    try {
+      const storedUserData = await AsyncStorage.getItem('userData');
+  
+      if (storedUserData) {
+        const userData = JSON.parse(storedUserData);
+        const storedUsername = userData.username;
+        const storedPassword = userData.password;
+  
+        if (username === storedUsername && password === storedPassword) {
+          navigation.navigate('Feed');
+        } else {
+          setErrorMessage('Invalid username or password');
+        }
+      } else {
+        setErrorMessage('No user data found');
+      }
+    } catch (error) {
+      console.error('Error retrieving stored user data from AsyncStorage:', error);
+      setErrorMessage('Error occurred while logging in');
+    }
   };
-
+  
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPass');
   };
