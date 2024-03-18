@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Modal } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Modal, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Share } from 'react-native';
 
-const Feed = ({ title, year, genre, user, photo, rectangleImage, time }) => {
+const Feed = ({ description, title, year, genre, user, photo, rectangleImage, time }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddCommentModalVisible, setAddCommentModalVisible] = useState(false);
   const [liked, setLiked] = useState(false);
   const likeButtonIcon = liked ? 'heart' : 'heart-outline';
   const likeButtonColor = liked ? 'red' : 'black';
@@ -44,6 +46,14 @@ const Feed = ({ title, year, genre, user, photo, rectangleImage, time }) => {
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
+  };
+
+  const toggleAddCommentModal = () => {
+    setAddCommentModalVisible(!isAddCommentModalVisible);
+  };
+
+  const handleAddComment = () => {
+    toggleAddCommentModal();
   };
 
   const renderOptions = () => {
@@ -92,6 +102,26 @@ const Feed = ({ title, year, genre, user, photo, rectangleImage, time }) => {
     }
   };
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: 'Check out this post on SoundVibes',
+        // Opcional: url: 'https://www.ejemplo.com',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // Compartido con una actividad específica de la aplicación
+        } else {
+          // Compartido exitosamente
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Compartir cancelado por el usuario
+      }
+    } catch (error) {
+      // Manejo de errores
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.userContainer}>
@@ -109,6 +139,7 @@ const Feed = ({ title, year, genre, user, photo, rectangleImage, time }) => {
           <Icon name="ellipsis-vertical" size={20} color="black" />
         </TouchableOpacity>
       </View>
+      <Text style={styles.description}>{description}</Text>
       <Image source={rectangleImage} style={styles.rectangleImage} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.details}>{year} | {genre}</Text>
@@ -131,24 +162,95 @@ const Feed = ({ title, year, genre, user, photo, rectangleImage, time }) => {
           <Icon name={likeButtonIcon} size={20} color={likeButtonColor} />
           <Text style={styles.buttonText}>Like</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleAddComment}>
           <Icon name="chatbubble-outline" size={20} color="black" />
           <Text style={styles.buttonText}>Comment</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={onShare}>
           <Icon name="share-outline" size={20} color="black" />
           <Text style={styles.buttonText}>Share</Text>
         </TouchableOpacity>
-      </View>      
+      </View>  
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isAddCommentModalVisible}
+        onRequestClose={toggleAddCommentModal}
+      >
+        <View style={styles.modalContainer}>
+        <TouchableOpacity onPress={toggleAddCommentModal} style={styles.closeIcon}>
+          <Icon name="close" size={25} color="black" />
+        </TouchableOpacity>
+        <View style={styles.separator} />
+
+        <View style={styles.header}>
+          <Image source={require('../assets/images/John.jpg')} style={styles.circularImage} />
+          <Text>   | What are you listening to?</Text>
+        </View>
+
+          <TextInput
+            style={styles.largeInput}
+            placeholder=""
+            multiline={true}
+          />
+          <TouchableOpacity style={styles.attachIconContainer}>
+         <Image source={require('../assets/icon//image.png')} style={styles.attachIcon} />
+         </TouchableOpacity>
+
+          <View style={styles.separator} />
+
+          <View style={styles.additionalInfoContainer}>
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoText}>Título:</Text>
+              <TextInput style={styles.additionalInfoInput} placeholder="Título" />
+            </View>
+
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoText}>Género:</Text>
+              <TextInput style={styles.additionalInfoInput} placeholder="Género" />
+            </View>
+
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoText}>Año:</Text>
+              <TextInput style={styles.additionalInfoInput} placeholder="Año" />
+            </View>
+          </View>
+
+          <View style={styles.iconColumn}>
+            <View style={styles.musicServiceIconContainer}>
+              <Image source={require('../assets/icon/spotify.png')} style={styles.musicServiceIcon} />
+              <TextInput style={styles.musicServiceInput} placeholder="Spotify" />
+            </View>
+
+            <View style={styles.musicServiceIconContainer}>
+              <Image source={require('../assets/icon/youtube.png')} style={styles.musicServiceIcon} />
+              <TextInput style={styles.musicServiceInput} placeholder="YouTube" />
+            </View>
+
+            <View style={styles.musicServiceIconContainer}>
+              <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
+              <TextInput style={styles.musicServiceInput} placeholder="SoundCloud" />
+            </View>
+          </View>
+
+          <View style={styles.separator} />
+
+          <TouchableOpacity onPress={handleAddComment} style={styles.publishButton}>
+        <Text style={{ color: 'white', fontWeight: 'bold' }}>SHARE</Text>
+      </TouchableOpacity>
+        </View>
+      </Modal>
+
       <Modal
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
         onRequestClose={toggleModal}
       >
-        <View style={styles.modalContainer}>
-          <TouchableOpacity style={styles.modalBackground} onPress={toggleModal} />
-          <View style={styles.modalContent}>
+        <View style={styles.modalContainer1}>
+          <TouchableOpacity style={styles.modalBackground1} onPress={toggleModal} />
+          <View style={styles.modalContent1}>
             {renderOptions()}
           </View>
         </View>
@@ -228,19 +330,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
   },
-  modalContainer: {
+  modalContainer1: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
-  modalBackground: {
+  modalBackground1: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
   },
-  modalContent: {
+  modalContent1: {
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 22,
@@ -269,6 +371,133 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     marginLeft: 5,
+  },
+  description: {
+    fontSize: 15,
+    color: 'black',
+    marginBottom: 5,
+    textAlign: 'justify',
+  },
+
+  
+
+
+  modalContainer: {
+    marginTop: 120,
+    width: '85%',
+    height: '70%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    borderRadius: 20,
+  },
+  circularImage: {
+    width: 35,
+    height: 35,
+    borderRadius: 25,
+    marginBottom: 10,
+  },
+  largeInput: {
+    width: '80%',
+    height: 100,
+    padding: 10,
+  },
+  additionalInfoContainer: {
+    width: '80%',
+    marginBottom: 10,
+    paddingLeft: 30,
+  },
+  additionalInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  additionalInfoText: {
+    fontWeight: 'bold',
+  },
+  additionalInfoInput: {
+    flex: 1,
+    height: 25,
+    marginLeft: 10,
+    padding: 5,
+  },
+  iconColumn: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  musicServiceIcon: {
+    width: 30,
+    height: 30,
+    marginBottom: 5,
+  },
+  buttonContainer2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+
+  musicServiceInput: {
+    height: 25,
+    marginLeft: 10,
+    padding: 5,
+    width: '68%',
+  },
+
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 10,
+
+  },
+
+  musicServiceIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  separator: {
+    height: 1,
+    backgroundColor: '#A19895',
+    width: '90%',
+    alignSelf: 'center',
+    marginVertical: 7,
+  },
+
+  closeIcon: {
+    marginLeft: 'auto',
+    marginRight: 10,
+  },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 25,
+  },
+
+  publishButton: {
+    width:80,
+    backgroundColor: '#FF4500',
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    fontWeight: 'bold', 
+  },
+
+  attachIconContainer: {
+    width: 20,
+    height: 20,
+    paddingLeft: 265,
+  },
+
+  attachIcon: {
+    width: 20,
+    height: 20,
   },
 });
 
