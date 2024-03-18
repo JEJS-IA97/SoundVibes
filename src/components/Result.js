@@ -119,7 +119,7 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
         <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('soundcloud')}>
           <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
         </TouchableOpacity>
-      </View>
+      </View>     
       <Modal
         animationType="slide"
         transparent={true}
