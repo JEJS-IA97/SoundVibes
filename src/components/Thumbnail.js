@@ -1,21 +1,19 @@
 import React from 'react';
-import { TouchableOpacity, Image, Text, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, View, StyleSheet } from 'react-native';
 
-const Thumbnail = ({ image, title, onPress }) => (
-  <TouchableOpacity style={styles.thumbnail} onPress={onPress}>
-    <Image source={{ uri: image }} style={styles.image} />
-    <Text>{title}</Text>
+const Thumbnail = ({ image, onPress }) => (
+  <TouchableOpacity style={styles.postItem} onPress={onPress}>
+    <Image source={image} style={styles.postImage} />
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
-  thumbnail: {
+  postItem: {
     margin: 10,
   },
-  image: {
+  postImage: {
     width: 100,
     height: 100,
-    borderRadius: 8,
   },
 });
 

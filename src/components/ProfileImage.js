@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const ProfileImage = ({ navigation }) => {
-  const userProfileImage = require('../assets/images/John.jpg');
+  const userProfileImage = require('../assets/images/Jhon.jpeg');
 
   return (
     <View style={styles.container}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ProfileImage from '../components/ProfileImage';
+import { FontAwesome } from '@expo/vector-icons';
 
 const ProfileScreen = ({ navigation }) => {
   const posts = [
@@ -23,6 +24,9 @@ const ProfileScreen = ({ navigation }) => {
         style={styles.container}
       >
         <ScrollView>
+        <TouchableOpacity style={styles.settingsButton} onPress={() => navigation.navigate('User')}>
+          <FontAwesome name="cog" size={24} color="black" />
+        </TouchableOpacity>
         <ProfileImage navigation={navigation}/>
         <View style={styles.profileContainer}>
           <View style={styles.statsContainer}>
@@ -39,9 +43,7 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={styles.statLabel}>Following</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.followButton}>
-            <Text style={styles.followButtonText}>Follow</Text>
-          </TouchableOpacity>
+    
           <View style={styles.postsContainer}>
             {posts.map(post => (
               <TouchableOpacity key={post.id} style={styles.postItem}>
@@ -113,6 +115,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  settingsButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 1,
   },
 });
 

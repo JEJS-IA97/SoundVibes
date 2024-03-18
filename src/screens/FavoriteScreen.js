@@ -1,60 +1,78 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import BottomBar from '../components/BottomBar';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const FavoritesScreen = ({ navigation }) => {
   const favoritesData = [
-    { image: 'url_imagen_fav_1', title: 'Favorito 1' },
-    { image: 'url_imagen_fav_2', title: 'Favorito 2' },
-    { image: 'url_imagen_fav_3', title: 'Favorito 3' },
-    { image: 'url_imagen_fav_4', title: 'Favorito 4' },
-    { image: 'url_imagen_fav_5', title: 'Favorito 5' },
-    { image: 'url_imagen_fav_6', title: 'Favorito 6' },
-    { image: 'url_imagen_fav_7', title: 'Favorito 7' },
-    { image: 'url_imagen_fav_8', title: 'Favorito 8' },
-    { image: 'url_imagen_fav_9', title: 'Favorito 9' },
-    { image: 'url_imagen_fav_10', title: 'Favorito 10' },
-    { image: 'url_imagen_fav_11', title: 'Favorito 11' },
-    { image: 'url_imagen_fav_12', title: 'Favorito 12' },
-    { image: 'url_imagen_fav_13', title: 'Favorito 13' },
-    { image: 'url_imagen_fav_14', title: 'Favorito 14' },
-    { image: 'url_imagen_fav_15', title: 'Favorito 15' },
-
+    { id: 1, image: require('../assets/images/1.jpg') },
+    { id: 2, image: require('../assets/images/2.jpg') },
+    { id: 3, image: require('../assets/images/3.jpg') },
+    { id: 4, image: require('../assets/images/4.jpg') },
+    { id: 5, image: require('../assets/images/5.jpg') },
+    { id: 6, image: require('../assets/images/6.jpg') },
+    { id: 7, image: require('../assets/images/7.jpg') },
+    { id: 8, image: require('../assets/images/8.jpg') },
+    { id: 9, image: require('../assets/images/9.jpg') },
+    { id: 10, image: require('../assets/images/10.png') },
+    { id: 11, image: require('../assets/images/11.jpg') },
+    { id: 12, image: require('../assets/images/12.jpg') },
+    { id: 13, image: require('../assets/images/13.jpg') },
+    { id: 14, image: require('../assets/images/14.jpg') },
+    { id: 15, image: require('../assets/images/15.jpg') },
+    { id: 16, image: require('../assets/images/16.jpg') },
+    { id: 17, image: require('../assets/images/17.jpg') },
+    { id: 18, image: require('../assets/images/18.jpg') },
+    { id: 19, image: require('../assets/images/19.jpg') },
+    { id: 20, image: require('../assets/images/20.jpg') },
+    { id: 21, image: require('../assets/images/21.png') },
+    { id: 22, image: require('../assets/images/22.jpg') },
+    { id: 23, image: require('../assets/images/23.jpg') },
+    { id: 24, image: require('../assets/images/24.jpg') },
   ];
 
-  const renderThumbnail = ({ item }) => (
-    <TouchableOpacity style={styles.thumbnailContainer}>
-      <Text>{item.title}</Text>
-    </TouchableOpacity>
-  );
-
   return (
+    <LinearGradient colors={['rgba(135, 206, 235, 0.4)', 'rgba(255, 69, 0, 0.4)']} style={styles.container}>
+    <TopBar navigation={navigation}/>
+    <ScrollView>
     <View style={styles.container}>
-      <TopBar navigation={navigation} />
-      <FlatList
-        data={favoritesData}
-        renderItem={renderThumbnail}
-        keyExtractor={(item) => item.title}
-        numColumns={3} 
-      />
-      <BottomBar navigation={navigation} />
-    </View>
+        <View style={styles.postsContainer}>
+          {favoritesData.map((item) => (
+            <TouchableOpacity key={item.id} style={styles.postItem}>
+              <Image source={item.image} style={styles.postImage} />
+            </TouchableOpacity>
+          ))}
+        </View>
+        </View>
+    </ScrollView> 
+    <BottomBar navigation={navigation} />
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
-  thumbnailContainer: {
-    flex: 1,
-    aspectRatio: 1, 
-    margin: 5,
-    backgroundColor: 'lightgray',
-    justifyContent: 'center',
-    alignItems: 'center',
+  postsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+    marginBottom: 16,
+    marginTop:16,
+  },
+  postItem: {
+    width: '32%',
+    aspectRatio: 1,
+    marginVertical: 2,
+    marginHorizontal: 2,
+  },
+  postImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
 });
 

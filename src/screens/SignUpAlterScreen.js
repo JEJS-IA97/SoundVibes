@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomModal from '../components/CustomModal'; 
 
 
 const SignUpAlterScreen = ({ navigation }) => {
@@ -17,6 +18,8 @@ const SignUpAlterScreen = ({ navigation }) => {
   const [telefono, setTelefono] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -80,14 +83,14 @@ const SignUpAlterScreen = ({ navigation }) => {
         genero,
         fechaNacimiento: fechaNacimiento.toISOString(), 
         telefono,
+        password,
       };
   
       await AsyncStorage.setItem('userData', JSON.stringify(userData));
+      setIsModalVisible(true);
     } catch (error) {
       console.error('Error saving user data to AsyncStorage:', error);
-      
     }
-    navigation.navigate('SignIn');
   };
 
     const isValidEmail = (email) => {
@@ -95,6 +98,11 @@ const SignUpAlterScreen = ({ navigation }) => {
         return emailRegex.test(email);
       };
   
+      const handleCloseModal = () => {
+        setIsModalVisible(false);
+        navigation.navigate('SignIn'); 
+      };
+
   return (
     <ImageBackground
       source={require('../assets/images/Data.jpg')}
@@ -233,6 +241,15 @@ const SignUpAlterScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>REGISTER</Text>
         </TouchableOpacity>
       </View>
+      {isModalVisible && (
+        <CustomModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        title="Registration Successful"
+        description="Your account has been successfully registered."
+        buttonText="CONTINUE"
+      />
+      )}
     </ImageBackground>
   );
 };
