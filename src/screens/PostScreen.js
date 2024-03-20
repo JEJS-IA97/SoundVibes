@@ -203,7 +203,7 @@ const styles = {
     marginBottom: 5,
   },
   commentContainer: {
-    marginTop: 10,
+    marginTop: 15,
   },
   comment: {
     flexDirection: 'row',

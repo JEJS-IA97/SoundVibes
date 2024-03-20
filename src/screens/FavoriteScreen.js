@@ -33,7 +33,7 @@ const FavoritesScreen = ({ navigation }) => {
   ];
 
   const goToPostDetail = (post) => {
-    navigation.navigate('PostScreen', { post });
+    navigation.navigate('Post', { post });
   };
 
   return (

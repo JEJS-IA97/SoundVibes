@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Share } from 'react-native';
 
-const Feed = ({ description, title, year, genre, user, photo, rectangleImage, time }) => {
+const Feed = ({ description, title, year, genre, user, photo, rectangleImage, time, navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddCommentModalVisible, setAddCommentModalVisible] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -72,7 +72,7 @@ const Feed = ({ description, title, year, genre, user, photo, rectangleImage, ti
               <Text>Add to Favorites</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableOpacity onPress={() => console.log('Go to Publication')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Post')}>
               <Text>Go to Publication</Text>
             </TouchableOpacity>
             <View style={styles.separator} />

@@ -48,7 +48,7 @@ const App = () => {
         <Stack.Screen name="User2" component={UserScreen2} />
         <Stack.Screen name="User3" component={UserScreen3} />
         <Stack.Screen name="User4" component={UserScreen4} />
-        <Stack.Screen name="PostScreen" component={PostScreen} />
+        <Stack.Screen name="Post" component={PostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
