@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Feed from '../components/Feed';
 
 const FeedScreen = ({ navigation }) => {
+  
   const feedData = [
     { id: '1', 
     name: 'Post 1', 

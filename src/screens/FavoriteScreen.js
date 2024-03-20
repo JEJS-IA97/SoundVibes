@@ -32,6 +32,10 @@ const FavoritesScreen = ({ navigation }) => {
     { id: 24, image: require('../assets/images/24.jpg') },
   ];
 
+  const goToPostDetail = (post) => {
+    navigation.navigate('PostScreen', { post });
+  };
+
   return (
     <LinearGradient colors={['rgba(135, 206, 235, 0.4)', 'rgba(255, 69, 0, 0.4)']} style={styles.container}>
     <TopBar navigation={navigation}/>
@@ -39,7 +43,7 @@ const FavoritesScreen = ({ navigation }) => {
     <View style={styles.container}>
         <View style={styles.postsContainer}>
           {favoritesData.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.postItem}>
+            <TouchableOpacity key={item.id} style={styles.postItem} onPress={() => goToPostDetail(item)}>
               <Image source={item.image} style={styles.postImage} />
             </TouchableOpacity>
           ))}
