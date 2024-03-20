@@ -1,5 +1,5 @@
 import {React, useState} from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import TopBar from '../components/TopBar';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,10 +15,19 @@ const PostScreen = ({ route, navigation }) => {
   const likeButtonIcon = liked ? 'heart' : 'heart-outline';
   const likeButtonColor = liked ? 'red' : 'black';
 
+  const comments = [
+    { id: 1, photo: require('../assets/images/Taylor.jpg'), userName: 'Taylor Swift', 
+    text: 'Love it!', 
+    time: '1h ago' },
+    { id: 2, photo: require('../assets/images/ariana.png'), userName: 'Ariana Grande', text: 'Best album', time: '2h ago' },
+    { id: 3, photo: require('../assets/images/Harry.jpg'), userName: 'Harry Styles', text: 'Legends', time: '3h ago' },
+  ];
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={['rgba(135, 206, 235, 0.3)', 'rgba(255, 69, 0, 0.3)']} style={styles.container}>
         <TopBar navigation={navigation}/>
+        <ScrollView>
         <View style={styles.container}>
           <View style={styles.container2}>
             <View style={styles.userContainer}>
@@ -68,8 +77,28 @@ const PostScreen = ({ route, navigation }) => {
                 <Text style={styles.buttonText}>Share</Text>
               </TouchableOpacity>
             </View>
+            <View style={styles.commentContainer}>
+              {comments.map((comment) => (
+                <View style={styles.comment} key={comment.id}>
+                  <LinearGradient
+                    colors={['#87CEEB', '#FFA500', '#FF4500']}
+                    style={styles.profileImageContainer}
+                  >
+                    <Image source={comment.photo} style={styles.commentUserPhoto} />
+                  </LinearGradient>
+                  <View style={styles.commentContent} key={comment.id}>
+                    <Text style={styles.commentUserName}>{comment.userName}</Text>
+                    <Text style={styles.commentText}>{comment.text}</Text>
+                    <Text style={styles.commentTime}>{comment.time}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
           </View>
         </View>  
+        </ScrollView> 
+
       </LinearGradient>
     </View>
   );
@@ -173,6 +202,36 @@ const styles = {
     height: 30,
     marginBottom: 5,
   },
+  commentContainer: {
+    marginTop: 10,
+  },
+  comment: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 15,
+  },
+  commentUserPhoto: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+  },
+  commentContent: {
+    flex: 1,
+    paddingHorizontal: 10
+  },
+  commentUserName: {
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  commentText: {
+    fontSize: 14,
+    textAlign: 'justify'
+  },
+  commentTime: {
+    fontSize: 12,
+    color: 'gray',
+  },
+  
   // postWindow: {
   //   flex: 1,
   //   alignItems: 'center',
