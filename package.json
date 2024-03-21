@@ -22,6 +22,7 @@
     "@sinonjs/commons": "^4.0.0-alpha.0",
     "color-convert": "^2.0.1",
     "expo": "~50.0.2",
+    "expo-image-picker": "^14.7.1",
     "expo-linear-gradient": "^12.7.1",
     "expo-status-bar": "~1.11.1",
     "i18n-js": "^4.3.2",
