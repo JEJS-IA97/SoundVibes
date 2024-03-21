@@ -4,8 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 
-
-const Result = ({ title, year, genre, user, profileImage, image, time, onPress }) => {
+const Result = ({ title, year, genre, user, profileImage, image, time, onPress, spotify, youtube, soundcloud }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation();
 
@@ -17,7 +16,7 @@ const Result = ({ title, year, genre, user, profileImage, image, time, onPress }
   const handleGoToPublication = () => {
     setIsModalVisible(false); 
     navigation.navigate('Post', { 
-      post: { title, year, genre, user, profileImage, image, time } 
+      post: { title, year, genre, user, profileImage, image, time, spotify, youtube, soundcloud} 
     });
   };
   
@@ -45,15 +44,20 @@ const Result = ({ title, year, genre, user, profileImage, image, time, onPress }
   };
 
   const handleServiceIconPress = (service) => {
-    const userServices = userURLs[user]; 
-    const serviceURL = userServices[service]; 
-    if (serviceURL) {
-      Linking.openURL(serviceURL); 
+    const userServices = userURLs[user];
+    if (userServices) {
+      const serviceURL = userServices[service];
+      if (serviceURL) {
+        Linking.openURL(serviceURL);
+      } else {
+        console.log('URL no encontrada para este servicio');
+      }
     } else {
-      console.log('URL no encontrada para este servicio');
+      console.log('Servicios de usuario no encontrados');
     }
   };
-
+  
+  
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -102,6 +106,23 @@ const Result = ({ title, year, genre, user, profileImage, image, time, onPress }
     } else {
       return null;
     }
+  };
+
+  const navigateToPostScreen = (post) => {
+    navigation.navigate('Post', { 
+      post: { 
+        title: post.title,
+        year: post.year,
+        genre: post.genre,
+        user: post.user,
+        profileImage: post.profileImage,
+        image: post.image,
+        time: post.time,
+        spotify: userURLs[post.user].spotify,
+        youtube: userURLs[post.user].youtube,
+        soundcloud: userURLs[post.user].soundcloud
+      } 
+    });
   };
 
   return (
