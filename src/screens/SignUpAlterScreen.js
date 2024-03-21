@@ -4,6 +4,9 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomModal from '../components/CustomModal'; 
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 
 
 const SignUpAlterScreen = ({ navigation }) => {
@@ -19,7 +22,8 @@ const SignUpAlterScreen = ({ navigation }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -211,28 +215,40 @@ const SignUpAlterScreen = ({ navigation }) => {
         <View style={styles.line}></View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>Password</Text>
+        <View style={styles.passwordContainer}>
           <TextInput
-            style={styles.input}
+            style={styles.input2}
             placeholder="Enter your password"
             placeholderTextColor="white"
             value={password}
+            secureTextEntry={!showPassword}
             onChangeText={(text) => setPassword(text)}
           />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
+            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} color="white" size={20} />
+          </TouchableOpacity>
         </View>
-        <View style={styles.line}></View>
+      </View>
+      <View style={styles.line2}></View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Confirm Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm your password"
-            placeholderTextColor="white"
-            value={confirmPassword}
-            onChangeText={(text) => setConfirmPassword(text)}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.input2}
+              placeholder="Confirm your password"
+              placeholderTextColor="white"
+              value={confirmPassword}
+              secureTextEntry={!showConfirmPassword}
+              onChangeText={(text) => setConfirmPassword(text)}
+            />
+            <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIconContainer}>
+              <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} color="white" size={20} />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.line}></View>
+        <View style={styles.line2}></View>
 
         <TouchableOpacity
           style={[styles.button, { backgroundColor: '#FF4500' }]}
@@ -292,7 +308,21 @@ const styles = StyleSheet.create({
     color: 'white',
     flex: 1,
   },
+  input2: {
+    height: 25,
+    borderColor: 'transparent',
+    backgroundColor: 'transparent',
+    color: 'white',
+    flex: 1,
+  },
   line: {
+    height: 1,
+    width: '100%',
+    backgroundColor: 'white',
+    marginBottom: 6,
+  },
+
+  line2: {
     height: 1,
     width: '100%',
     backgroundColor: 'white',
@@ -358,20 +388,23 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-
-    input2: {
-        height: 45,
-        borderColor: 'transparent',
-        backgroundColor: 'transparent',
-        color: 'white',
-        flex: 1,
-      },
       errorText: {
         color: 'red',
         fontSize: 14,
         marginBottom: 10,
         textAlign: 'center',
       },
+      passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 30,
+        width: '100%',
+      },
+      eyeIconContainer: {
+        position: 'absolute',
+        right: 10,
+      },
+      
 });
 
 export default SignUpAlterScreen;

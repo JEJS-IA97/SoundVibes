@@ -50,11 +50,14 @@ const SignUpScreen2 = ({ navigation }) => {
     return true;
   };
 
-  const handleContinue = () => {
+  const handleCancel = () => {
+    navigation.goBack(); 
+  };
+  
+  const handleSave = () => {
     if (!validateInputs()) {
       return;
     }
-
     const phonePattern = /^[0-9]+$/;
     if (!phonePattern.test(telefono)) {
       return;
@@ -168,13 +171,13 @@ const SignUpScreen2 = ({ navigation }) => {
             <View style={styles.buttonContainer}>
             <TouchableOpacity
                 style={[styles.button, { backgroundColor: 'gray' }]}
-                onPress={handleContinue}
+                onPress={handleCancel}
               >
                 <Text style={styles.buttonText}>CANCEL</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#FF4500' }]}
-                onPress={handleContinue}
+                onPress={handleSave}
               >
                 <Text style={styles.buttonText}>SAVE</Text>
               </TouchableOpacity>

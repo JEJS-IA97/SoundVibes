@@ -2,10 +2,25 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
-const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
+
+const Result = ({ title, year, genre, user, profileImage, image, time, onPress }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const navigation = useNavigation();
 
+  const handlePress = () => {
+    onPress(); 
+    setIsModalVisible(false);
+  };
+
+  const handleGoToPublication = () => {
+    setIsModalVisible(false); 
+    navigation.navigate('Post', { 
+      post: { title, year, genre, user, profileImage, image, time } 
+    });
+  };
+  
   const userURLs = {
     'John Lennon': {
       spotify: 'https://open.spotify.com/intl-es/album/0ETFjACtuP2ADo6LFhL6HN?si=VQBHGpgvS-m_QUuTPJzHsA',
@@ -59,7 +74,7 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
               <Text>Add to Favorites</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableOpacity onPress={() => console.log('Go to Publication')}>
+            <TouchableOpacity onPress={handlePress}>
               <Text>Go to Publication</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
@@ -96,7 +111,7 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
           colors={['#87CEEB', '#FFA500', '#FF4500']}
           style={styles.profileImageContainer}
         >
-          <Image source={photo} style={styles.userPhoto} />
+          <Image source={profileImage} style={styles.userPhoto} />
         </LinearGradient>
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user}</Text>
@@ -106,7 +121,7 @@ const Result = ({ title, year, genre, user, photo, rectangleImage, time }) => {
           <Icon name="ellipsis-vertical" size={20} color="black" />
         </TouchableOpacity>
       </View>
-      <Image source={rectangleImage} style={styles.rectangleImage} />
+      <Image source={image} style={styles.rectangleImage} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.details}>{year} | {genre}</Text>
       <View style={styles.socialIconsContainer}>

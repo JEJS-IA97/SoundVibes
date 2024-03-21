@@ -6,9 +6,45 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const FavoritesScreen = ({ navigation }) => {
   const favoritesData = [
-    { id: 1, image: require('../assets/images/1.jpg') },
-    { id: 2, image: require('../assets/images/2.jpg') },
-    { id: 3, image: require('../assets/images/3.jpg') },
+    {
+      id: '1',
+      user: 'NF',
+      profileImage: require('../assets/images/nf.jpg'),
+      image: require('../assets/images/1.jpg'),
+      description: 'This song explores themes of internal struggle, regret, and pain in a relationship, with a focus on difficulty communicating and unmet expectations.',
+      title: 'Let You Down',
+      year: '2017',
+      genre: 'Hip hop',
+      spotify: 'https://open.spotify.com/intl-es/track/52okn5MNA47tk87PeZJLEL?si=f36f7659692c458a',
+      youtube: 'https://www.youtube.com/watch?v=0501BTnbrxg&ab_channel=NFVEVO',
+      soundcloud: 'https://soundcloud.com/nfrealmusic/let-you-down?si=6380a15f7e014a5caafcc163178a5c9d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+    },
+    {
+      id: '2',
+      user: 'Juan Pablo Isaza',
+      profileImage: require('../assets/images/isaza.jpg'),
+      image: require('../assets/images/2.jpg'),
+      description: 'Is a moving expression of love and pain, capturing the complexity of human relationships. It describes the longing for a lost love, the internal struggle between hope and resignation, and the need to hide true feelings when faced with reality.',
+      title: 'Cuando nadie ve',
+      year: '2016',
+      genre: 'Pop',
+      spotify: 'https://open.spotify.com/intl-es/track/1Cxd4ZJJ9VOQQpNcpdcZEQ?si=fd34c8ce351d46d0',
+      youtube: 'https://www.youtube.com/watch?v=szeA9tvItJY&ab_channel=MoratVEVO',
+      soundcloud: 'https://soundcloud.com/morat-official/cuando-nadie-ve?in=user972057279/sets/morat&si=a9dd72dffaed4ee28971100ea1284d09&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+    },
+    {
+      id: '3',
+      user: 'Christopher Martin',
+      profileImage: require('../assets/images/Chris.jpg'),
+      image: require('../assets/images/3.jpg'),
+      description: '"The Scientist" is a mesmerizing masterpiece that seamlessly blends haunting melodies with poignant lyrics.  the songs minimalist instrumentation, create a timeless atmosphere of introspection and regret. Its universal themes of longing and redemption resonate deeply with listeners.',
+      title: 'The Scientist',
+      year: '2002',
+      genre: 'Rock',
+      spotify: 'https://open.spotify.com/intl-es/track/75JFxkI2RXiU7L9VXzMkle?si=48ea0fa73c0b4231',
+      youtube: 'https://www.youtube.com/watch?v=RB-RcX5DS5A&ab_channel=Coldplay',
+      soundcloud: 'https://soundcloud.com/user-956334953/coldplay-the-scientist?si=6103d7c553b9459eaa692221425a082a&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+    },
     { id: 4, image: require('../assets/images/4.jpg') },
     { id: 5, image: require('../assets/images/5.jpg') },
     { id: 6, image: require('../assets/images/6.jpg') },
@@ -32,9 +68,10 @@ const FavoritesScreen = ({ navigation }) => {
     { id: 24, image: require('../assets/images/24.jpg') },
   ];
 
-  const goToPostDetail = (post) => {
-    navigation.navigate('Post', { post });
+  const goToPostDetail = (item) => {
+    navigation.navigate('Post', { post: item });
   };
+  
 
   return (
     <LinearGradient colors={['rgba(135, 206, 235, 0.4)', 'rgba(255, 69, 0, 0.4)']} style={styles.container}>

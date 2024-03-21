@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 
 const SignInScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     setErrorMessage('');
@@ -86,10 +90,13 @@ const SignInScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Password"
             placeholderTextColor="white"
-            secureTextEntry
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
+            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} color="white" size={20} />
+          </TouchableOpacity>
         </View>
         <View style={styles.line}></View>
         <TouchableOpacity
@@ -234,6 +241,11 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 16,
     marginTop: 10,
+  },
+  eyeIconContainer: {
+    position: 'absolute',
+    right: 10,
+    paddingTop: 5
   },
 });
 
