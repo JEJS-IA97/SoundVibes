@@ -21,6 +21,7 @@ import SearchScreen from './src/screens/SearchScreen';
 import UserScreen2 from './src/screens/UserScreen2';
 import UserScreen3 from './src/screens/UserScreen3';
 import UserScreen4 from './src/screens/UserScreen4';
+import PostScreen from './src/screens/PostScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ const App = () => {
         <Stack.Screen name="User2" component={UserScreen2} />
         <Stack.Screen name="User3" component={UserScreen3} />
         <Stack.Screen name="User4" component={UserScreen4} />
+        <Stack.Screen name="Post" component={PostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
