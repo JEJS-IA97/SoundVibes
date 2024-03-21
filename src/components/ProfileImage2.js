@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -17,7 +17,6 @@ const ProfileImage2 = ({ navigation, userProfileImage }) => {
           colors={['#87CEEB', '#FFA500', '#FF4500']}
           style={styles.profileImageContainer}
         >
-          
           <Image source={userProfileImage} style={styles.profileImage} />
         </LinearGradient>
       </View>
