@@ -4,12 +4,24 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Share } from 'react-native';
 
-const Feed = ({ description, title, year, genre, user, photo, rectangleImage, time, navigation }) => {
+const Feed = ({ description, title, year, genre, user, profileImage, image, time, navigation, onPress }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddCommentModalVisible, setAddCommentModalVisible] = useState(false);
   const [liked, setLiked] = useState(false);
   const likeButtonIcon = liked ? 'heart' : 'heart-outline';
   const likeButtonColor = liked ? 'red' : 'black';
+
+  const handlePress = () => {
+    onPress(); 
+    setIsModalVisible(false);
+  };
+
+  const handleGoToPublication = () => {
+    setIsModalVisible(false); 
+    navigation.navigate('Post', { 
+      post: { title, year, genre, user, profileImage, image, time } 
+    });
+  };
 
   const userURLs = {
     'John Lennon': {
@@ -72,7 +84,7 @@ const Feed = ({ description, title, year, genre, user, photo, rectangleImage, ti
               <Text>Add to Favorites</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableOpacity onPress={() => navigation.navigate('Post')}>
+            <TouchableOpacity onPress={handlePress}>
               <Text>Go to Publication</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
@@ -106,19 +118,14 @@ const Feed = ({ description, title, year, genre, user, photo, rectangleImage, ti
     try {
       const result = await Share.share({
         message: 'Check out this post on SoundVibes',
-        // Opcional: url: 'https://www.ejemplo.com',
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // Compartido con una actividad específica de la aplicación
         } else {
-          // Compartido exitosamente
         }
       } else if (result.action === Share.dismissedAction) {
-        // Compartir cancelado por el usuario
       }
     } catch (error) {
-      // Manejo de errores
     }
   };
 
@@ -129,7 +136,7 @@ const Feed = ({ description, title, year, genre, user, photo, rectangleImage, ti
           colors={['#87CEEB', '#FFA500', '#FF4500']}
           style={styles.profileImageContainer}
         >
-          <Image source={photo} style={styles.userPhoto} />
+          <Image source={profileImage} style={styles.userPhoto} />
         </LinearGradient>
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user}</Text>
@@ -140,7 +147,7 @@ const Feed = ({ description, title, year, genre, user, photo, rectangleImage, ti
         </TouchableOpacity>
       </View>
       <Text style={styles.description}>{description}</Text>
-      <Image source={rectangleImage} style={styles.rectangleImage} />
+      <Image source={image} style={styles.rectangleImage} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.details}>{year} | {genre}</Text>
       <View style={styles.socialIconsContainer}>

@@ -8,26 +8,53 @@ import Result from '../components/Result';
 
 const SearchScreen = ({ navigation }) => {
   const searchData = [
-    { id: '1', name: 'Resultado 1', user: 'John Lennon', photo: require('../assets/images/Jhon.jpeg'), rectangleImage : require('../assets/images/AbbeyRoad2.jpg'), title: 'Abbey Road (Album)', year: '1969', genre: 'Rock', time: '5d'},
-    { id: '2', name: 'Resultado 2', user: 'Christopher Martin', photo: require('../assets/images/Chris.jpg'), rectangleImage : require('../assets/images/fix.jpg'), title: 'Fix You', year: '2005', genre: 'Rock', time: '14h' },
-    { id: '3', name: 'Resultado 3', user: 'Billie Armstrong', photo: require('../assets/images/Billie.jpg'),  rectangleImage : require('../assets/images/Boulevard.jpg'), title: 'Boulevard of Broken Dr...', year: '2004', genre: 'Rock', time: '21h' },
-    { id: '4', name: 'Resultado 4', user: 'Brandon Flowers', photo: require('../assets/images/Brandon.jpeg'), rectangleImage : require('../assets/images/shot.jpg'), title: 'Shot at the Night', year: '2013', genre: 'Rock', time: '8d' },
+    { id: '1', 
+    name: 'Resultado 1', 
+    user: 'John Lennon', 
+    profileImage: require('../assets/images/Jhon.jpeg'), 
+    description: '"Abbey Road" is more than an album; it is a musical journey that trascends time.',
+    image : require('../assets/images/AbbeyRoad2.jpg'), 
+    title: 'Abbey Road (Album)', 
+    year: '1969', 
+    genre: 'Rock', 
+    time: '5d'},
+
+    { id: '2',
+    name: 'Resultado 2', 
+    user: 'Christopher Martin', 
+    profileImage: require('../assets/images/Chris.jpg'), 
+    description: 'It conveys a message of hope and comfort in difficult times. The song offers a comforting reminder that there is always light at the end of the tunnel. The lyrics, with their invitation to “fix yourself” and “enlighten yourself,” resonate with anyone who has faced challenges or loss in life.',
+    image : require('../assets/images/fix.jpg'), 
+    title: 'Fix You', 
+    year: '2005', 
+    genre: 'Rock', 
+    time: '14h' },
+
+    { id: '3', 
+    name: 'Resultado 3', 
+    user: 'Billie Armstrong', 
+    profileImage: require('../assets/images/Billie.jpg'),  
+    description: 'It is a moving anthem for those who feel lost and alone on their journey through life. The song captures the feeling of alienation and despair.',
+    image : require('../assets/images/Boulevard.jpg'), 
+    title: 'Boulevard of Broken Dr...', 
+    year: '2004', 
+    genre: 'Rock', 
+    time: '21h' },
+
+    { id: '4', 
+    name: 'Resultado 4', 
+    user: 'Brandon Flowers', 
+    profileImage: require('../assets/images/Brandon.jpeg'), 
+    description: '"Shot at the Night" celebrates the excitement of love and adventure. The lyrics, describing a romantic encounter under the city lights, capture the feeling of euphoria and excitement of being in love. It is a song that inspires us to pursue our dreams and live every moment to the fullest.',
+    image : require('../assets/images/shot.jpg'), 
+    title: 'Shot at the Night', 
+    year: '2013', 
+    genre: 'Rock', 
+    time: '8d' },
   ];
 
-  const navigateToUserScreen = (user) => {
-    let userScreenName;
-    switch (user) {
-      case 'John Lennon':
-        userScreenName = 'User';
-        break;
-      case 'Christopher Martin':
-        userScreenName = 'User3';
-        break;
-      default:
-        userScreenName = 'UserDefault';
-    }
-  
-    navigation.navigate(userScreenName);
+  const navigateToPostScreen = (post) => {
+    navigation.navigate('Post', { post });
   };
 
   const renderItem = ({ item }) => (
@@ -36,10 +63,10 @@ const SearchScreen = ({ navigation }) => {
       year={item.year}
       genre={item.genre}
       user={item.user}
-      photo={item.photo}
-      rectangleImage={item.rectangleImage}
+      profileImage={item.profileImage}
+      image={item.image}
       time={item.time}
-      onPress={() => navigateToUserScreen(item.user)}
+      onPress={() => navigateToPostScreen(item)}
     />
   );
 

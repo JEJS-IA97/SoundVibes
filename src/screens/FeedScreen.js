@@ -12,59 +12,50 @@ const FeedScreen = ({ navigation }) => {
     { id: '1', 
     name: 'Post 1', 
     user: 'John Lennon', 
-    photo: require('../assets/images/Jhon.jpeg'), 
+    profileImage: require('../assets/images/Jhon.jpeg'), 
     description: '"Abbey Road" is more than an album; it is a musical journey that trascends time.', 
-    rectangleImage : require('../assets/images/AbbeyRoad2.jpg'), 
+    image : require('../assets/images/AbbeyRoad2.jpg'), 
     title: 'Abbey Road (Album)', 
     year: '1969', 
     genre: 'Rock', 
     time: '5d'},
+
     { id: '2', 
     name: 'Post 2', 
     user: 'Ariana Grande', 
-    photo: require('../assets/images/ariana.png'), 
+    profileImage: require('../assets/images/ariana.png'), 
     description: '˚❀*·ꕤ. eternal sunshine out now ｡˚❀*·ꕤ.',
-    rectangleImage : require('../assets/images/eternal.jpg'), 
+    image : require('../assets/images/eternal.jpg'), 
     title: 'Eternal Sunshine', 
     year: '2024', 
     genre: 'Pop', 
     time: '10h' },
+
     { id: '3', 
     name: 'Post 3', 
     user: 'Taylor Swift', 
-    photo: require('../assets/images/Taylor.jpg'),  
+    profileImage: require('../assets/images/Taylor.jpg'),  
     description: 'Midnights, the stories of 13 sleepless nights scattered throughout my life.',
-    rectangleImage : require('../assets/images/midnights.jpg'), 
+    image : require('../assets/images/midnights.jpg'), 
     title: 'Midnights', 
     year: '2022', 
     genre: 'Pop', 
     time: '6d' },
+
     { id: '4', 
     name: 'Post 4', 
     user: 'Harry Styles', 
-    photo: require('../assets/images/Harry.jpg'), 
+    profileImage: require('../assets/images/Harry.jpg'), 
     description: `Two years of Harry's House. I’ve never been happier than making this album, thank you for everything.`,
-    rectangleImage : require('../assets/images/harrys.jpg'), 
+    image : require('../assets/images/harrys.jpg'), 
     title: `Harry's House`, 
     year: '2022', 
     genre: 'Pop', 
     time: '1w' },
   ];
 
-  const navigateToUserScreen = (user) => {
-    let userScreenName;
-    switch (user) {
-      case 'John Lennon':
-        userScreenName = 'User';
-        break;
-      case 'Taylor Swift':
-        userScreenName = 'User3';
-        break;
-      default:
-        userScreenName = 'UserDefault';
-    }
-  
-    navigation.navigate(userScreenName);
+  const navigateToPostScreen = (post) => {
+    navigation.navigate('Post', { post });
   };
 
   const renderItem = ({ item }) => (
@@ -74,10 +65,10 @@ const FeedScreen = ({ navigation }) => {
       year={item.year}
       genre={item.genre}
       user={item.user}
-      photo={item.photo}
-      rectangleImage={item.rectangleImage}
+      profileImage={item.profileImage}
+      image={item.image}
       time={item.time}
-      onPress={() => navigateToUserScreen(item.user)}
+      onPress={() => navigateToPostScreen(item)}
     />
   );
 
