@@ -2,9 +2,32 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as ImagePicker from 'expo-image-picker';
 
 const ProfileImage = ({ navigation }) => {
   const userProfileImage = require('../assets/images/Jhon.jpeg');
+
+  const selectImage = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert('Permission to access camera roll is required!');
+        return;
+      }
+      
+      const pickerResult = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 1,
+      });
+      
+      if (!pickerResult.cancelled) {
+        setSelectedImage(pickerResult.uri);
+      }
+    } catch (error) {
+      console.log('Error selecting image:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -21,7 +44,7 @@ const ProfileImage = ({ navigation }) => {
           >
             <Image source={userProfileImage} style={styles.profileImage} />
           </LinearGradient>
-          <TouchableOpacity style={styles.cameraButton}>
+          <TouchableOpacity onPress={selectImage} style={styles.cameraButton}>
             <Icon name="camera" size={24} color="white" />
           </TouchableOpacity>
           <Text style={styles.name}>John Lennon</Text>

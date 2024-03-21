@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Modal, Text, TextInput, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as ImagePicker from 'expo-image-picker';
 
 const BottomBar = ({ navigation }) => {
   const [isAddPostModalVisible, setAddPostModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const toggleAddPostModal = () => {
     setAddPostModalVisible(!isAddPostModalVisible);
@@ -12,6 +14,28 @@ const BottomBar = ({ navigation }) => {
 
   const handleAddPost = () => {
     toggleAddPostModal();
+  };
+
+  const selectImage = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert('Permission to access camera roll is required!');
+        return;
+      }
+      
+      const pickerResult = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 1,
+      });
+      
+      if (!pickerResult.cancelled) {
+        setSelectedImage(pickerResult.uri);
+      }
+    } catch (error) {
+      console.log('Error selecting image:', error);
+    }
   };
 
   return (
@@ -32,37 +56,35 @@ const BottomBar = ({ navigation }) => {
         <Icon name="notifications" size={25} color="white" />
       </TouchableOpacity>
 
-      
       <Modal
         animationType="slide"
         transparent={true}
         visible={isAddPostModalVisible}
         onRequestClose={toggleAddPostModal}
       >
-       <View style={styles.modalContainer}>
-    <TouchableOpacity onPress={toggleAddPostModal} style={styles.closeIcon}>
-      <Icon name="close" size={25} color="black" />
-    </TouchableOpacity>
-    <View style={styles.separator} />
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={toggleAddPostModal} style={styles.closeIcon}>
+            <Icon name="close" size={25} color="black" />
+          </TouchableOpacity>
+          <View style={styles.separator} />
 
-    <View style={styles.header}>
-    <LinearGradient
-                    colors={['#87CEEB', '#FFA500', '#FF4500']}
-                    style={styles.profileImageContainer}
-                  >
-      <Image source={require('../assets/images/Jhon.jpeg')} style={styles.circularImage} />
-      </LinearGradient>
-      <Text>   | What are you listening to?</Text>
-    </View>
-
+          <View style={styles.header}>
+            <LinearGradient
+              colors={['#87CEEB', '#FFA500', '#FF4500']}
+              style={styles.profileImageContainer}
+            >
+             <Image source={require('../assets/images/Jhon.jpeg')} style={styles.circularImage} />
+            </LinearGradient>
+            <Text>   | What are you listening to?</Text>
+          </View>
           <TextInput
             style={styles.largeInput}
             placeholder=""
             multiline={true}
           />
-          <TouchableOpacity style={styles.attachIconContainer}>
-         <Image source={require('../assets/icon//image.png')} style={styles.attachIcon} />
-         </TouchableOpacity>
+          <TouchableOpacity onPress={selectImage} style={styles.attachIconContainer}>
+            <Image source={require('../assets/icon/image.png')} style={styles.attachIcon} />
+          </TouchableOpacity>
 
           <View style={styles.separator} />
 
