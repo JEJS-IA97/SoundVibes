@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Modal, Text, TextInput, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const BottomBar = ({ navigation }) => {
   const [isAddPostModalVisible, setAddPostModalVisible] = useState(false);
@@ -45,7 +46,12 @@ const BottomBar = ({ navigation }) => {
     <View style={styles.separator} />
 
     <View style={styles.header}>
-      <Image source={require('../assets/images/John.jpg')} style={styles.circularImage} />
+    <LinearGradient
+                    colors={['#87CEEB', '#FFA500', '#FF4500']}
+                    style={styles.profileImageContainer}
+                  >
+      <Image source={require('../assets/images/Jhon.jpeg')} style={styles.circularImage} />
+      </LinearGradient>
       <Text>   | What are you listening to?</Text>
     </View>
 
@@ -123,10 +129,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   circularImage: {
-    width: 35,
-    height: 35,
+    width: 30,
+    height: 30,
     borderRadius: 25,
-    marginBottom: 10,
   },
   largeInput: {
     width: '80%',
@@ -229,6 +234,16 @@ const styles = StyleSheet.create({
   attachIcon: {
     width: 20,
     height: 20,
+  },
+
+  profileImageContainer: {
+    width: 35,
+    height: 35,
+    borderRadius: 100,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
 
 });
