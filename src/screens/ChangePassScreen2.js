@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importamos AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import ProfileImage from '../components/ProfileImage';
 import CustomModal from '../components/CustomModal'; 
 
@@ -14,7 +14,7 @@ const ChangePassScreen2 = ({ navigation }) => {
 
   const savePasswordToStorage = async (password) => {
     try {
-      await AsyncStorage.setItem('password', password); // Guardamos la contraseña en el almacenamiento
+      await AsyncStorage.setItem('password', password); 
     } catch (error) {
       console.error('Error saving password:', error);
     }
@@ -39,8 +39,7 @@ const ChangePassScreen2 = ({ navigation }) => {
     if (!validateInputs()) {
       return;
     }
-    
-    savePasswordToStorage(newPassword); // Guardamos la nueva contraseña en el almacenamiento
+    savePasswordToStorage(newPassword); 
     setIsModalVisible(true);
   };
 
