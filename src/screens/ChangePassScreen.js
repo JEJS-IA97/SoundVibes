@@ -1,25 +1,53 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
 import CustomModal from '../components/CustomModal'; 
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 const ChangePassScreen = ({ navigation }) => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [isModalVisible, setModalVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignIn = () => {
     navigation.navigate('SignIn');
   };
 
+  const savePasswordToStorage = async (password) => {
+    try {
+      await AsyncStorage.setItem('password', password); 
+    } catch (error) {
+      console.error('Error saving password:', error);
+    }
+  };
+
   const handleContinue = () => {
-    setModalVisible(true);
+    if (!validateInputs()) {
+      return;
+    }
+    savePasswordToStorage(newPassword); 
+    setIsModalVisible(true);
   };
 
   const handleCloseModal = () => {
-    setModalVisible(false);
+    setIsModalVisible(false);
     navigation.navigate('SignIn');
   };
 
+  const validateInputs = () => {
+    if (!newPassword.trim() || !confirmPassword.trim()) {
+      setErrorMessage('All fields are required');
+      return false;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('Passwords do not match');
+      return false;
+    }
+
+    setErrorMessage('');
+    return true;
+  };
 
   return (
     <ImageBackground
@@ -37,6 +65,9 @@ const ChangePassScreen = ({ navigation }) => {
         </View>
         <Text style={styles.title2}>Please create a new password</Text>
         <Text style={styles.title3}>that you don't use on only site</Text>
+        {errorMessage !== '' && (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            )}
         <View style={styles.inputContainer}>
           <Image
             source={require('../assets/icon/password-icon.png')}
@@ -46,6 +77,7 @@ const ChangePassScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="New password"
             placeholderTextColor="white"
+            secureTextEntry={true}
             value={newPassword}
             onChangeText={(text) => setNewPassword(text)}
           />
@@ -60,6 +92,7 @@ const ChangePassScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Confirm password"
             placeholderTextColor="white"
+            secureTextEntry={true}
             value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
           />
@@ -74,13 +107,15 @@ const ChangePassScreen = ({ navigation }) => {
         <TouchableOpacity onPress={handleSignIn}>
           <Text style={styles.signUpLink}>Sign In</Text>
         </TouchableOpacity>
-        <CustomModal
-          isVisible={isModalVisible}
-          onClose={handleCloseModal}
-          title="Password Changed!"
-          description="Your password has been changed successfully."
-          buttonText="CONTINUE"
-        />
+        {isModalVisible && (
+            <CustomModal
+              isVisible={isModalVisible}
+              onClose={handleCloseModal}
+              title="Password Changed!"
+              description="Your password has been changed successfully."
+              buttonText="CONTINUE"
+            />
+          )}
       </View>
     </ImageBackground>
   );
@@ -197,6 +232,13 @@ const styles = StyleSheet.create({
     marginLeft: 5, 
     marginTop: 45,
     paddingTop: 15,
+  },
+
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 
 });
