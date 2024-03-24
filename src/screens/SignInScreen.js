@@ -28,7 +28,7 @@ const SignInScreen = ({ navigation }) => {
         const storedPassword = userData.password;
   
         if (username === storedUsername && password === storedPassword) {
-          navigation.navigate('Feed');
+          navigation.replace('Feed');
         } else {
           setErrorMessage('Invalid username or password');
         }

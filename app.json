@@ -5,7 +5,29 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
-  },
-  "name": "SoundVibe"
+    ],
+    "icon": "./src/assets/icon/icon.png",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/icon/icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/icon/icon.png"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tuempresa.tuapp",
+      "buildNumber": "1.0.0"
+    },
+    "androidNavigationBar": {
+      "visible": "visible"
+    }
+  }
 }

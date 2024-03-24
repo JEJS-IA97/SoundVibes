@@ -105,8 +105,6 @@ const NotificationsScreen = ({ navigation }) => {
         <Text style={styles.thisWeekSectionText}>This week</Text>
         {notificationsThisWeek.map(renderItem)}
       </ScrollView>
-
-      <BottomBar navigation={navigation}/>
     </LinearGradient>
   );
 };
