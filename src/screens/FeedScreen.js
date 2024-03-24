@@ -1,12 +1,23 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, FlatList} from 'react-native';
 import TopBar from '../components/TopBar';
 import BottomBar from '../components/BottomBar';
 import { LinearGradient } from 'expo-linear-gradient';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Feed from '../components/Feed';
+import { BackHandler } from 'react-native';
 
 const FeedScreen = ({ navigation }) => {
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        return true;
+      }
+      return false;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [navigation]); 
+
   
   const feedData = [
     { id: '1', 
@@ -98,8 +109,6 @@ const FeedScreen = ({ navigation }) => {
           keyExtractor={(item) => item.id}
         />
       </View>
-      
-      <BottomBar navigation={navigation} />
     </LinearGradient>
   );
 };

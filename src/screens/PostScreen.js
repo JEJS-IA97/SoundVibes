@@ -205,7 +205,6 @@ const PostScreen = ({ route, navigation, onPress }) => {
           </View>  
           </ScrollView>
       </KeyboardAvoidingView>
-        <BottomBar navigation={navigation} />
       </LinearGradient>
     </View>
   );

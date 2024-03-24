@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground,ScrollView } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomModal from '../components/CustomModal'; 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
-
 
 const SignUpAlterScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -112,7 +110,9 @@ const SignUpAlterScreen = ({ navigation }) => {
       source={require('../assets/images/Data.jpg')}
       style={styles.backgroundImage}
     >
+      
       <View style={styles.container}>
+      
         <Text style={styles.title}>Sign Up</Text>
         <Text style={styles.title2}>Please enter the following information</Text>
         {errorMessage !== '' && (
@@ -266,6 +266,7 @@ const SignUpAlterScreen = ({ navigation }) => {
         buttonText="CONTINUE"
       />
       )}
+      
     </ImageBackground>
   );
 };

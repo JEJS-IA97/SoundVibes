@@ -4,7 +4,7 @@ import { View, ImageBackground, StyleSheet } from 'react-native';
 const PortadaScreen = ({ navigation }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('SignIn');
+      navigation.replace('SignIn');
     }, 3000);
 
     return () => clearTimeout(timer);

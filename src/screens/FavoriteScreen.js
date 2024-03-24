@@ -90,7 +90,6 @@ const FavoritesScreen = ({ navigation }) => {
         </View>
         </View>
     </ScrollView> 
-    <BottomBar navigation={navigation} />
     </LinearGradient>
   );
 };

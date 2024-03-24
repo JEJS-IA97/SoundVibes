@@ -114,7 +114,6 @@ const SearchScreen = ({ navigation }) => {
           keyExtractor={(item) => item.id}
         />
       </View>
-      <BottomBar navigation={navigation} />
     </LinearGradient>
   );
 };
