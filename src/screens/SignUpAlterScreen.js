@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground,ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground,KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomModal from '../components/CustomModal'; 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -76,23 +75,6 @@ const SignUpAlterScreen = ({ navigation }) => {
       return;
     }
   
-    try {
-      const userData = {
-        username,
-        email,
-        nombre,
-        apellido,
-        genero,
-        fechaNacimiento: fechaNacimiento.toISOString(), 
-        telefono,
-        password,
-      };
-  
-      await AsyncStorage.setItem('userData', JSON.stringify(userData));
-      setIsModalVisible(true);
-    } catch (error) {
-      console.error('Error saving user data to AsyncStorage:', error);
-    }
   };
 
     const isValidEmail = (email) => {
@@ -110,9 +92,8 @@ const SignUpAlterScreen = ({ navigation }) => {
       source={require('../assets/images/Data.jpg')}
       style={styles.backgroundImage}
     >
-      
-      <View style={styles.container}>
-      
+      <KeyboardAvoidingView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Text style={styles.title}>Sign Up</Text>
         <Text style={styles.title2}>Please enter the following information</Text>
         {errorMessage !== '' && (
@@ -256,7 +237,8 @@ const SignUpAlterScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>REGISTER</Text>
         </TouchableOpacity>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {isModalVisible && (
         <CustomModal
         isVisible={isModalVisible}
@@ -279,9 +261,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    width: '90%',
-    padding: 16,
-    backgroundColor: 'transparent',
+    width: '120%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {

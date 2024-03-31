@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, FlatList} from 'react-native';
 import TopBar from '../components/TopBar';
-import BottomBar from '../components/BottomBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Feed from '../components/Feed';
 import { BackHandler } from 'react-native';

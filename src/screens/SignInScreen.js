@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import { BackHandler } from 'react-native';
 
 const SignInScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -11,36 +10,33 @@ const SignInScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
-    setErrorMessage('');
-  
-    if (username.trim() === '' || password.trim() === '') {
-      setErrorMessage('Username and password are required');
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        return true;
+      }
+      return false;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [navigation]); 
+
+  const handleLogin = () => {
+    if (!validateInputs()) {
       return;
     }
-  
-    try {
-      const storedUserData = await AsyncStorage.getItem('userData');
-  
-      if (storedUserData) {
-        const userData = JSON.parse(storedUserData);
-        const storedUsername = userData.username;
-        const storedPassword = userData.password;
-  
-        if (username === storedUsername && password === storedPassword) {
-          navigation.replace('Feed');
-        } else {
-          setErrorMessage('Invalid username or password');
-        }
-      } else {
-        setErrorMessage('No user data found');
-      }
-    } catch (error) {
-      console.error('Error retrieving stored user data from AsyncStorage:', error);
-      setErrorMessage('Error occurred while logging in');
-    }
+    navigation.replace('BottomBarScreens', { screen: 'Feed' });
   };
-  
+
+  const validateInputs = () => {
+    if (!username.trim() || !password.trim()) {
+      setErrorMessage('All fields are required');
+      return false;
+    }
+    setErrorMessage('');
+    return true;
+  };
+
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPass');
   };
@@ -54,7 +50,8 @@ const SignInScreen = ({ navigation }) => {
       source={require('../assets/images/SignIn.jpg')}
       style={styles.backgroundImage}
     >
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.select({ ios: 0, android: 50 })}>
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Text style={styles.title}>Sign In</Text>
         <View style={styles.logoContainer}>
           <Image
@@ -117,7 +114,8 @@ const SignInScreen = ({ navigation }) => {
             <Text style={styles.signUpLink}>Sign up</Text>
           </TouchableOpacity>
         </Text>
-      </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
@@ -130,10 +128,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    width: '90%',
-    padding: 16,
-    backgroundColor: 'transparent',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
   },
   title: {
     color: 'white',

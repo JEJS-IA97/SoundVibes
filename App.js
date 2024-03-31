@@ -3,8 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StatusBar } from 'react-native';
-
-// Importa tus pantallas aquí
 import FrontPageScreen from './src/screens/FrontPageScreen';
 import SignInScreen from './src/screens/SignInScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -29,8 +27,6 @@ import BottomBar from './src/components/BottomBar';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// Definir las pantallas que tendrán Bottom Bar
 const BottomBarScreens = () => {
   return (
     <Tab.Navigator tabBar={() => <BottomBar />}
@@ -50,7 +46,6 @@ const App = () => {
       <StatusBar barStyle="light-content" />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* Las pantallas que no tienen Bottom Bar */}
           <Stack.Screen name="FrontPage" component={FrontPageScreen} />
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
@@ -62,7 +57,11 @@ const App = () => {
           <Stack.Screen name="User3" component={UserScreen3} />
           <Stack.Screen name="User4" component={UserScreen4} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="User" component={UserScreen} />
+          <Stack.Screen
+          name="User"
+          component={UserScreen}
+          options={{ gestureEnabled: false }}
+        />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="ChangePass2" component={ChangePassScreen2} />
