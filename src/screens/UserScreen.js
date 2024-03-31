@@ -41,7 +41,7 @@ const UserScreen = ({ navigation }) => {
               <Text style={styles.buttonText}>Settings</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('SignIn')}>
+            <TouchableOpacity style={styles.button}  onPress={() => navigation.replace('SignIn')}>
               <Icon name="log-out-outline" size={24} color="black" />
               <Text style={styles.buttonText}>Sign Out</Text>
             </TouchableOpacity>

@@ -12,7 +12,6 @@ const PortadaScreen = ({ navigation }) => {
 
   return (
     <ImageBackground source={require('..//assets/images/FrontPage.jpg')} style={styles.backgroundImage}>
-      {/* Contenido de la portada */}
     </ImageBackground>
   );
 };

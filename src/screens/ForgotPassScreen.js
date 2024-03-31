@@ -49,7 +49,7 @@ const ForgotPassScreen = ({ navigation }) => {
       source={require('../assets/images/Password.jpg')}
       style={styles.backgroundImage}
     >
-      <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={Platform.select({ ios: 0, android: 50 })}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.select({ ios: 0, android: 50 })}>
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <Text style={styles.title}>Forgot Your</Text>
           <Text style={styles.title}>Password</Text>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import CustomModal from '../components/CustomModal'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 const ChangePassScreen = ({ navigation }) => {
     const [newPassword, setNewPassword] = useState('');
@@ -11,14 +10,6 @@ const ChangePassScreen = ({ navigation }) => {
 
   const handleSignIn = () => {
     navigation.navigate('SignIn');
-  };
-
-  const savePasswordToStorage = async (password) => {
-    try {
-      await AsyncStorage.setItem('password', password); 
-    } catch (error) {
-      console.error('Error saving password:', error);
-    }
   };
 
   const handleContinue = () => {
@@ -54,7 +45,8 @@ const ChangePassScreen = ({ navigation }) => {
       source={require('../assets/images/Change.jpg')}
       style={styles.backgroundImage}
     >
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.select({ ios: 0, android: 50 })}>
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Text style={styles.title}>Change Your</Text>
         <Text style={styles.title}>Password</Text>
         <View style={styles.logoContainer}>
@@ -116,7 +108,8 @@ const ChangePassScreen = ({ navigation }) => {
               buttonText="CONTINUE"
             />
           )}
-      </View>
+       </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
@@ -129,9 +122,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    width: '90%',
-    padding: 16,
-    backgroundColor: 'transparent',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
