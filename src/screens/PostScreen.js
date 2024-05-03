@@ -3,8 +3,8 @@ import { View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, Tex
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import TopBar from '../components/TopBar';
-import BottomBar from '../components/BottomBar';
 import { Linking } from 'react-native';
+import Comments from '../components/Comment';
 
 const PostScreen = ({ route, navigation, onPress }) => {
   const { post } = route.params;
@@ -16,14 +16,6 @@ const PostScreen = ({ route, navigation, onPress }) => {
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState(false);
   const [commentContent, setCommentContent] = useState('');
   const scrollViewRef = useRef(null);
-
-  const comments = [
-    { id: 1, photo: require('../assets/images/Taylor.jpg'), user: 'Taylor Swift', 
-    text: 'Love it!', 
-    time: '1h ago' },
-    { id: 2, photo: require('../assets/images/ariana.png'), user: 'Ariana Grande', text: 'Best album', time: '2h ago' },
-    { id: 3, photo: require('../assets/images/Harry.jpg'), user: 'Harry Styles', text: 'Legends', time: '3h ago' },
-  ];
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -66,11 +58,31 @@ const PostScreen = ({ route, navigation, onPress }) => {
     scrollViewRef.current.scrollToEnd({ animated: true }); 
   };
 
-  const postComment = () => {
-    console.log('Comment posted:', commentContent);
-    setCommentContent('');
-    setIsCommentBoxOpen(false);
+  const postComment = async () => {
+    try {
+      const response = await fetch('http://192.168.0.101:4000/api/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          postId: postId, // Reemplaza postId con el ID de la publicación actual
+          userId: userId, // Reemplaza userId con el ID del usuario actual
+          content: commentContent, // Utiliza el contenido del comentario actual
+        }),
+      });
+      if (response.ok) {
+        console.log('Comentario guardado correctamente');
+        setCommentContent('');
+        setIsCommentBoxOpen(false);
+      } else {
+        console.error('Error al guardar el comentario:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+    }
   };
+  
 
   const onShare = async () => {
     try {
@@ -92,123 +104,106 @@ const PostScreen = ({ route, navigation, onPress }) => {
       <LinearGradient colors={['rgba(135, 206, 235, 0.3)', 'rgba(255, 69, 0, 0.3)']} style={styles.container}>
         <TopBar navigation={navigation}/>
         <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        style={{ flex: 1 }}
-      >
-        <ScrollView ref={scrollViewRef}>
-          <View style={styles.container}>
-            <View style={styles.container2}>
-              <View style={styles.userContainer}>
-                <LinearGradient
-                  colors={['#87CEEB', '#FFA500', '#FF4500']}
-                  style={styles.profileImageContainer}
-                >
-                  <Image source={post.profileImage} style={styles.userPhoto} />
-                </LinearGradient>
-                <View style={styles.userInfo}>
-                  <Text style={styles.user}>{post.user}</Text>
-                  <Text style={styles.time}>{post.time}</Text>
-                </View>
-                <TouchableOpacity style={styles.optionsContainer} onPress={toggleModal}>
-                  <Icon name="ellipsis-vertical" size={20} color="black" />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.description}>{post.description}</Text>
-              <Image source={post.image} style={styles.image} />
-              <Text style={styles.title}>{post.title}</Text>
-              <Text style={styles.year}>{post.year}</Text>
-              <Text style={styles.genre}>{post.genre}</Text>
-  
-              <View style={styles.socialIconsContainer}>
-              <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('spotify', spotify)}>
-                <Image source={require('../assets/icon/spotify.png')} style={styles.musicServiceIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('youtube', youtube)} >
-                <Image source={require('../assets/icon/youtube.png')} style={styles.musicServiceIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('soundcloud', soundcloud)} >
-                <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
-              </TouchableOpacity>
-              </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => setLiked(!liked)}
-                >
-                  <Icon name={likeButtonIcon} size={20} color={likeButtonColor} />
-                  <Text style={styles.buttonText}>Like</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={openCommentBox}>
-                <Icon name="chatbubble-outline" size={20} color="black" />
-                <Text style={styles.buttonText}>Comment</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onShare}>
-                  <Icon name="share-outline" size={20} color="black" />
-                  <Text style={styles.buttonText}>Share</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.separator} />
-              <View style={styles.commentContainer}>
-                {comments.map((comment, index) => (
-                  <View key={comment.id}>
-                    <View style={styles.comment}>
-                      <LinearGradient
-                        colors={['#87CEEB', '#FFA500', '#FF4500']}
-                        style={styles.profileImageContainer}
-                      >
-                        <Image source={comment.photo} style={styles.commentUserPhoto} />
-                      </LinearGradient>
-                      <View style={styles.commentContent} key={comment.id}>
-                        <Text style={styles.commentUserName}>{comment.user}</Text>
-                        <Text style={styles.commentText}>{comment.text}</Text>
-                        <Text style={styles.commentTime}>{comment.time}</Text>
-                      </View>
-                    </View>
-                  </View>
-                ))}
-              </View>
-  
-              {isCommentBoxOpen && (
-                <View style={styles.comment2}>
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          style={{ flex: 1 }}
+        >
+          <ScrollView ref={scrollViewRef}>
+            <View style={styles.container}>
+              <View style={styles.container2}>
+                <View style={styles.userContainer}>
                   <LinearGradient
                     colors={['#87CEEB', '#FFA500', '#FF4500']}
                     style={styles.profileImageContainer}
                   >
-                    <Image source={require('../assets/images/Jhon.jpeg')} style={styles.commentUserPhoto} />
+                    <Image source={post.profileImage} style={styles.userPhoto} />
                   </LinearGradient>
-                  <TextInput
-                    style={styles.commentTextInput2}
-                    placeholder="Write a comment..."
-                    onChangeText={(text) => setCommentContent(text)}
-                    value={commentContent}
-                  />
-                  <TouchableOpacity onPress={postComment}>
-                    <Icon name="send" size={20} color="black" /> 
+                  <View style={styles.userInfo}>
+                    <Text style={styles.user}>{post.user}</Text>
+                    <Text style={styles.time}>{post.time}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.optionsContainer} onPress={toggleModal}>
+                    <Icon name="ellipsis-vertical" size={20} color="black" />
                   </TouchableOpacity>
                 </View>
-              )}
+                <Text style={styles.description}>{post.description}</Text>
+                <Image source={post.image} style={styles.image} />
+                <Text style={styles.title}>{post.title}</Text>
+                <Text style={styles.year}>{post.year}</Text>
+                <Text style={styles.genre}>{post.genre}</Text>
   
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isModalVisible}
-                onRequestClose={toggleModal}
-              >
-                <View style={styles.modalContainer}>
-                  <TouchableOpacity style={styles.modalBackground} onPress={toggleModal} />
-                  <View style={styles.modalContent}>
-                    {renderOptions()}
+                <View style={styles.socialIconsContainer}>
+                  <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('spotify', spotify)}>
+                    <Image source={require('../assets/icon/spotify.png')} style={styles.musicServiceIcon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('youtube', youtube)} >
+                    <Image source={require('../assets/icon/youtube.png')} style={styles.musicServiceIcon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('soundcloud', soundcloud)} >
+                    <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => setLiked(!liked)}
+                  >
+                    <Icon name={likeButtonIcon} size={20} color={likeButtonColor} />
+                    <Text style={styles.buttonText}>Like</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={openCommentBox}>
+                    <Icon name="chatbubble-outline" size={20} color="black" />
+                    <Text style={styles.buttonText}>Comment</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={onShare}>
+                    <Icon name="share-outline" size={20} color="black" />
+                    <Text style={styles.buttonText}>Share</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.separator} />
+                <View style={styles.commentContainer}>
+                  <Comments comments={comments} /> {/* Renderiza el componente de comentarios */}
+                </View>
+  
+                {isCommentBoxOpen && (
+                  <View style={styles.comment2}>
+                    <LinearGradient
+                      colors={['#87CEEB', '#FFA500', '#FF4500']}
+                      style={styles.profileImageContainer}
+                    >
+                      <Image source={require('../assets/images/Jhon.jpeg')} style={styles.commentUserPhoto} />
+                    </LinearGradient>
+                    <TextInput
+                      style={styles.commentTextInput2}
+                      placeholder="Write a comment..."
+                      onChangeText={(text) => setCommentContent(text)}
+                      value={commentContent}
+                    />
+                    <TouchableOpacity onPress={postComment}>
+                      <Icon name="send" size={20} color="black" /> 
+                    </TouchableOpacity>
                   </View>
-                </View>  
-              </Modal>
-            </View>
-          </View>  
+                )}
+  
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={isModalVisible}
+                  onRequestClose={toggleModal}
+                >
+                  <View style={styles.modalContainer}>
+                    <TouchableOpacity style={styles.modalBackground} onPress={toggleModal} />
+                    <View style={styles.modalContent}>
+                      {renderOptions()}
+                    </View>
+                  </View>  
+                </Modal>
+              </View>
+            </View>  
           </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
       </LinearGradient>
     </View>
   );
-
 };
 
 const styles = StyleSheet.create({

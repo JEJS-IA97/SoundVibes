@@ -5,17 +5,19 @@ import { Picker } from '@react-native-picker/picker';
 import CustomModal from '../components/CustomModal'; 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { register } from '../api/Auth';
+
 
 const SignUpAlterScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [genero, setGenero] = useState('');
-  const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
-  const [telefono, setTelefono] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthday, setBirthday] = useState(new Date());
+  const [phone, setPhone] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -38,35 +40,73 @@ const SignUpAlterScreen = ({ navigation }) => {
   const isValidPhoneNumber = (phoneNumber) => {
     return phoneNumber.length >= 10;
   };
-  
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const validateInputs = () => {
-    if (!username.trim() || !password.trim() || !email.trim() || !nombre.trim() || !apellido.trim() || !genero || !fechaNacimiento || !telefono.trim()|| !confirmPassword.trim()) {
+    if (!username.trim() || !password.trim() || !confirmPassword.trim() || !email.trim() || !firstName.trim() || !lastName.trim() || !gender || !birthday || !phone.trim()) {
       setErrorMessage('All fields are required');
       return false;
     }
 
-    if (!isValidPhoneNumber(telefono)) {
+    if (!isValidPhoneNumber(phone)) {
       setErrorMessage('Invalid phone number');
       return false;
     }
 
     if (!isValidEmail(email)) {
-        setErrorMessage('Invalid email format');
-        return false;
-      }
+      setErrorMessage('Invalid email format');
+      return false;
+    }
 
-    setErrorMessage('');
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match');
+      return false;
+    }
+
     return true;
   };
 
-  const handleContinue = async () => {
-    if (!validateInputs()) {
-      return;
-    }
+
+    const handleContinue = async () => {
+      if (!validateInputs()) {
+        return;
+      }
+  
+      const userData = {
+        username,
+        password,
+        email,
+        firstName,
+        lastName,
+        gender,
+        birthday,
+        phone
+      };
+      
+      try {
+        const response = await register(userData);
+  
+        console.info(response);
+  
+        if (response?.Message === "User created") {
+         
+          console.log('Register successful!');
+          setIsModalVisible(true)
+   
+        } else {
+          setErrorMessage(response?.Message || 'Register failed');
+        }
+      } catch (error) {
+        console.error('Error in:', error);
+        setErrorMessage('Network Error');
+      }
   
     const phonePattern = /^[0-9]+$/;
-    if (!phonePattern.test(telefono)) {
+    if (!phonePattern.test(phone)) {
       return;
     }
   
@@ -76,16 +116,11 @@ const SignUpAlterScreen = ({ navigation }) => {
     }
   
   };
-
-    const isValidEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      };
   
-      const handleCloseModal = () => {
-        setIsModalVisible(false);
-        navigation.navigate('SignIn'); 
-      };
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    navigation.navigate('SignIn'); 
+  };
 
   return (
     <ImageBackground
@@ -130,8 +165,8 @@ const SignUpAlterScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Enter your first name"
             placeholderTextColor="white"
-            value={nombre}
-            onChangeText={(text) => setNombre(text)}
+            value={firstName}
+            onChangeText={(text) => setFirstName(text)}
           />
         </View>
         <View style={styles.line}></View>
@@ -142,8 +177,8 @@ const SignUpAlterScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Enter your last name"
             placeholderTextColor="white"
-            value={apellido}
-            onChangeText={(text) => setApellido(text)}
+            value={lastName}
+            onChangeText={(text) => setLastName(text)}
           />
         </View>
         <View style={styles.line}></View>
@@ -152,13 +187,13 @@ const SignUpAlterScreen = ({ navigation }) => {
           <Text style={styles.label}>Gender</Text>
           <View style={styles.pickerContainer}>
             <Picker
-              selectedValue={genero}
+              selectedValue={gender}
               style={styles.input2}
-              onValueChange={(itemValue) => setGenero(itemValue)}
+              onValueChange={(itemValue) => setGender(itemValue)}
             >
               <Picker.Item label="Select your gender" value="" color="white" />
-              <Picker.Item label="Male" value="Male" />
-              <Picker.Item label="Female" value="Female" />
+              <Picker.Item label="Male" value="M" />
+              <Picker.Item label="Female" value="F" />
             </Picker>
           </View>
         </View>
@@ -169,7 +204,7 @@ const SignUpAlterScreen = ({ navigation }) => {
           <TouchableOpacity onPress={showDatePicker}>
             <View style={styles.datePickerContainer}>
               <Text style={styles.datePickerText}>
-                {fechaNacimiento ? fechaNacimiento.toLocaleDateString('es-ES') : 'Select your date of birth'}
+                {birthday ? birthday.toLocaleDateString('es-ES') : 'Select your date of birth'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -188,8 +223,8 @@ const SignUpAlterScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Enter your phone number"
             placeholderTextColor="white"
-            value={telefono}
-            onChangeText={(text) => setTelefono(text.replace(/[^0-9]/g, ''))}
+            value={phone}
+            onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))}
             keyboardType="numeric"
           />
         </View>

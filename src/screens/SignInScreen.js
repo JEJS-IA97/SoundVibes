@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { BackHandler } from 'react-native';
 
+import { login } from "../api/Auth/index";
+
 const SignInScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -21,11 +23,23 @@ const SignInScreen = ({ navigation }) => {
     return () => backHandler.remove();
   }, [navigation]); 
 
-  const handleLogin = () => {
-    if (!validateInputs()) {
-      return;
+  const handleLogin = async () => {
+    try {
+      const response = await login(username, password);
+
+      console.info(response);
+
+      if (response?.Message === "Success") {
+       
+        console.log('Login successful!');
+        navigation.replace('BottomBarScreens', { screen: 'Feed' });
+      } else {
+        setErrorMessage(response?.Message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setErrorMessage('Network Error');
     }
-    navigation.replace('BottomBarScreens', { screen: 'Feed' });
   };
 
   const validateInputs = () => {
