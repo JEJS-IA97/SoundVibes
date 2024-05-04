@@ -66,9 +66,9 @@ const PostScreen = ({ route, navigation, onPress }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          postId: postId, // Reemplaza postId con el ID de la publicación actual
-          userId: userId, // Reemplaza userId con el ID del usuario actual
-          content: commentContent, // Utiliza el contenido del comentario actual
+          postId: postId, 
+          userId: userId, 
+          content: commentContent,
         }),
       });
       if (response.ok) {

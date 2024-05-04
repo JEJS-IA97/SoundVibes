@@ -4,9 +4,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { BackHandler } from 'react-native';
 
-import { login } from "../api/Auth/index";
+import { useDispatch, useSelector } from "react-redux";
+import { login, selectIsLogged, selectUserErrorMessage, selectUserLogged } from "../features/user/userSlice";
 
 const SignInScreen = ({ navigation }) => {
+
+  const isLogged = useSelector(selectIsLogged);
+  const user = useSelector(selectUserLogged);
+  const userErrorMessage = useSelector(selectUserErrorMessage);
+
+  const dispatch = useDispatch();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -25,22 +33,18 @@ const SignInScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await login(username, password);
-
-      console.info(response);
-
-      if (response?.Message === "Success") {
-       
-        console.log('Login successful!');
-        navigation.replace('BottomBarScreens', { screen: 'Feed' });
-      } else {
-        setErrorMessage(response?.Message || 'Login failed');
-      }
+      dispatch(login({ username, password }));
     } catch (error) {
       console.error('Error logging in:', error);
       setErrorMessage('Network Error');
     }
   };
+
+  useEffect(() => {
+    if (isLogged) {
+      navigation.replace('BottomBarScreens', { screen: 'Feed' });
+    }
+  }, [isLogged]);
 
   const validateInputs = () => {
     if (!username.trim() || !password.trim()) {

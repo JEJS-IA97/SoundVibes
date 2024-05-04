@@ -3,6 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StatusBar } from 'react-native';
+
+import { Provider } from "react-redux";
+import { PersistGate } from 'redux-persist/integration/react';
+
+import { store, persistor } from "./src/store";
+
 import FrontPageScreen from './src/screens/FrontPageScreen';
 import SignInScreen from './src/screens/SignInScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -30,7 +36,7 @@ const Tab = createBottomTabNavigator();
 const BottomBarScreens = () => {
   return (
     <Tab.Navigator tabBar={() => <BottomBar />}
-    screenOptions={{ headerShown: false }}>
+      screenOptions={{ headerShown: false }}>
       <Tab.Screen name="Feed" component={FeedScreen} />
       <Tab.Screen name="Favorite" component={FavoriteScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
@@ -42,34 +48,38 @@ const BottomBarScreens = () => {
 
 const App = () => {
   return (
-    <View style={{ flex: 1 }}>
-      <StatusBar barStyle="light-content" />
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="FrontPage" component={FrontPageScreen} />
-          <Stack.Screen name="SignIn" component={SignInScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="SignUp2" component={SignUpScreen2} />
-          <Stack.Screen name="ForgotPass" component={ForgotPassScreen} />
-          <Stack.Screen name="ChangePass" component={ChangePassScreen} />
-          <Stack.Screen name="Alternative" component={SignUpAlterScreen} />
-          <Stack.Screen name="User2" component={UserScreen2} />
-          <Stack.Screen name="User3" component={UserScreen3} />
-          <Stack.Screen name="User4" component={UserScreen4} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen
-          name="User"
-          component={UserScreen}
-          options={{ gestureEnabled: false }}
-        />
-          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-          <Stack.Screen name="ChangePass2" component={ChangePassScreen2} />
-          
-          <Stack.Screen name="BottomBarScreens" component={BottomBarScreens} screenOptions={{ headerShown: false }}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <View style={{ flex: 1 }}>
+          <StatusBar barStyle="light-content" />
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="FrontPage" component={FrontPageScreen} />
+              <Stack.Screen name="SignIn" component={SignInScreen} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <Stack.Screen name="SignUp2" component={SignUpScreen2} />
+              <Stack.Screen name="ForgotPass" component={ForgotPassScreen} />
+              <Stack.Screen name="ChangePass" component={ChangePassScreen} />
+              <Stack.Screen name="Alternative" component={SignUpAlterScreen} />
+              <Stack.Screen name="User2" component={UserScreen2} />
+              <Stack.Screen name="User3" component={UserScreen3} />
+              <Stack.Screen name="User4" component={UserScreen4} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen
+                name="User"
+                component={UserScreen}
+                options={{ gestureEnabled: false }}
+              />
+              <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+              <Stack.Screen name="Settings" component={SettingsScreen} />
+              <Stack.Screen name="ChangePass2" component={ChangePassScreen2} />
+
+              <Stack.Screen name="BottomBarScreens" component={BottomBarScreens} screenOptions={{ headerShown: false }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
+      </PersistGate>
+    </Provider>
   );
 };
 

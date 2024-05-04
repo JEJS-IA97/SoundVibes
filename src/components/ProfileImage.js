@@ -4,7 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { getUserProfileImage } from '../api/Auth/index';
-import jwt_decode from 'jwt-decode';
+
+import { listFiles, uploadToFirebase } from "../../firebaseConfig";
+import { updateUserImageProfile } from '../api/User';
 
 const ProfileImage = ({ navigation }) => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -12,17 +14,10 @@ const ProfileImage = ({ navigation }) => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+
       try {
-        // Token de autenticación obtenido después de iniciar sesión
-        const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTQ3NTY0NTUsImV4cCI6MTcxNTM2MTI1NX0.LG63t-P8eN5lL6A1XDfztjBQ6gXIAFJvVC0u_PmvZFo";
-
-        // Decodificamos el token JWT para obtener el ID del usuario autenticado
-        const decodedToken = jwt_decode(authToken);
-        const user_id = decodedToken.id;
-
-        // Usamos ese ID para obtener la imagen de perfil del usuario
-        const profileImage = await getUserProfileImage(user_id);
-        setSelectedImage(profileImage);
+        const profileImage = await getUserProfileImage();
+        setSelectedImage(profileImage.Data.profileImage);
         setLoading(false);
       } catch (error) {
         console.log('Error fetching user profile image:', error);
@@ -48,7 +43,22 @@ const ProfileImage = ({ navigation }) => {
       });
 
       if (!pickerResult.cancelled) {
-        setSelectedImage(pickerResult.uri);
+
+        const image = pickerResult.assets[0].uri
+
+        setSelectedImage(image);
+        const fileName = image.split("/").pop();
+        const uploadResp = await uploadToFirebase(image, fileName, (v) =>
+          console.log(`Percent: ${Number(v).toFixed(2)}%`)
+        );
+
+        if (!uploadResp.downloadUrl) {
+          throw Error ("No se subió la wea");
+        }
+
+        const response = await updateUserImageProfile(uploadResp.downloadUrl);
+        console.log(response);
+
       }
     } catch (error) {
       console.log('Error selecting image:', error);

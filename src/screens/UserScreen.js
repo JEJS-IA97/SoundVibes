@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ProfileImage from '../components/ProfileImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { logout, selectIsLogged } from "../features/user/userSlice";
 
 const UserScreen = ({ navigation }) => {
+
+  const dispatch = useDispatch();
+  const isLogged = useSelector(selectIsLogged);
+
+  const handleLogout = async () => {
+    dispatch(logout());
+  };
+
+  useEffect(() => {
+    if (!isLogged) {
+      navigation.replace('SignIn');
+    }
+  }, [isLogged]);
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -13,7 +29,7 @@ const UserScreen = ({ navigation }) => {
         style={styles.container}
       >
         <ScrollView>
-          <ProfileImage navigation={navigation}/>
+          <ProfileImage navigation={navigation} />
           <View style={styles.profileContainer}>
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
@@ -27,7 +43,7 @@ const UserScreen = ({ navigation }) => {
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>500</Text>
                 <Text style={styles.statLabel}>Following</Text>
-              </View>           
+              </View>
             </View>
           </View>
           <View style={styles.buttonContainer}>
@@ -41,17 +57,17 @@ const UserScreen = ({ navigation }) => {
               <Text style={styles.buttonText}>Settings</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity style={styles.button}  onPress={() => navigation.replace('SignIn')}>
+            <TouchableOpacity style={styles.button} onPress={handleLogout}>
               <Icon name="log-out-outline" size={24} color="black" />
               <Text style={styles.buttonText}>Sign Out</Text>
             </TouchableOpacity>
-          </View>       
+          </View>
           <View style={styles.logoContainer}>
             <Image
               source={require('../assets/images/Soundvibe.png')}
               style={styles.image}
             />
-          </View>  
+          </View>
         </ScrollView>
       </LinearGradient>
     </View>
