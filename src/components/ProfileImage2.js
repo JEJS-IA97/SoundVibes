@@ -1,9 +1,30 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { getUserProfileImage } from '../api/Auth/index';
 
-const ProfileImage2 = ({ navigation, userProfileImage }) => {
+const ProfileImage2 = ({ navigation }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+
+      try {
+        const profileImage = await getUserProfileImage();
+        setSelectedImage(profileImage.Data.profileImage);
+        setLoading(false);
+      } catch (error) {
+        console.log('Error fetching user profile image:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
@@ -17,7 +38,14 @@ const ProfileImage2 = ({ navigation, userProfileImage }) => {
           colors={['#87CEEB', '#FFA500', '#FF4500']}
           style={styles.profileImageContainer}
         >
-          <Image source={userProfileImage} style={styles.profileImage} />
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <Image
+              source={selectedImage ? { uri: selectedImage } : require('../assets/images/Jhon.jpeg')}
+              style={styles.profileImage}
+            />
+          )}
         </LinearGradient>
       </View>
     </View>
