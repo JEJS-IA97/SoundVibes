@@ -1,9 +1,27 @@
-import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { getUserProfileImage } from '../api/Auth/index';
 
 const TopBar = ({ navigation }) => {
-  const userProfileImage = require('../assets/images/Jhon.jpeg');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+
+      try {
+        const profileImage = await getUserProfileImage();
+        setSelectedImage(profileImage.Data.profileImage);
+        setLoading(false);
+      } catch (error) {
+        console.log('Error fetching user profile image:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -12,15 +30,24 @@ const TopBar = ({ navigation }) => {
         source={require('../assets/images/Logo.png')}
         style={styles.logo}
       />
+      
 
-      <LinearGradient
-        colors={['#87CEEB', '#FFA500', '#FF4500']}
-        style={styles.userProfileContainer}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          <Image source={userProfileImage} style={styles.userProfileImage} />
-        </TouchableOpacity>
-      </LinearGradient>
+      < LinearGradient
+          colors={['#87CEEB', '#FFA500', '#FF4500']}
+          style={styles.profileImageContainer}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <Image
+              source={selectedImage ? { uri: selectedImage } : require('../assets/images/Jhon.jpeg')}
+              style={styles.userProfileImage}
+            />
+            
+          )}
+          </TouchableOpacity>
+        </LinearGradient> 
     </View>
   );
 };
@@ -39,7 +66,14 @@ const styles = StyleSheet.create({
     height: '100%',
     
   },
-  userProfileContainer: {
+
+  userProfileImage: {
+    width: 30,
+    height: 30,
+    resizeMode: 'cover',
+    borderRadius: 18, 
+  },
+  profileImageContainer:{
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -47,13 +81,7 @@ const styles = StyleSheet.create({
     borderWidth: 2, 
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  userProfileImage: {
-    width: 30,
-    height: 30,
-    resizeMode: 'cover',
-    borderRadius: 18, 
-  },
+  }
 });
 
 export default TopBar;
