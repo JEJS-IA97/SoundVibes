@@ -40,8 +40,8 @@ const listFiles = async () => {
 
 /**
  *
- * @param {*} uri
- * @param {*} name
+ * @param {*} uri - URL image
+ * @param {*} name - Name file
  */
 const uploadToFirebase = async (uri, name, onProgress) => {
   const fetchResponse = await fetch(uri);

@@ -5,13 +5,11 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { BackHandler } from 'react-native';
 
 import { useDispatch, useSelector } from "react-redux";
-import { login, selectIsLogged, selectUserErrorMessage, selectUserLogged } from "../features/user/userSlice";
+import { login, selectIsLogged } from "../features/user/userSlice";
 
 const SignInScreen = ({ navigation }) => {
 
   const isLogged = useSelector(selectIsLogged);
-  const user = useSelector(selectUserLogged);
-  const userErrorMessage = useSelector(selectUserErrorMessage);
 
   const dispatch = useDispatch();
 
@@ -33,7 +31,7 @@ const SignInScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      dispatch(login({ username, password }));
+      dispatch(await login({ username, password }));
     } catch (error) {
       console.error('Error logging in:', error);
       setErrorMessage('Network Error');

@@ -4,19 +4,54 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { listFiles, uploadToFirebase } from "../../firebaseConfig";
+
+import { create } from '../api/Post';
+
 
 const BottomBar = () => {
   const navigation = useNavigation();
   const [isAddPostModalVisible, setAddPostModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const [postData, setPostData] = useState({
+    description: '',
+    title: '',
+    gender: '',
+    year: '',
+    link_spotify: '',
+    link_soundcloud: '',
+    link_youtube: '',
+    image: ''
+  });
+
   const route = useRoute();
 
   const toggleAddPostModal = () => {
     setAddPostModalVisible(!isAddPostModalVisible);
   };
 
-  const handleAddPost = () => {
+  const handleAddPost1 = () => {
+
     toggleAddPostModal();
+
+  };
+
+  const handleAddPost = async () => {
+    try {
+      const newPost = await create(postData);
+      console.log('Success!');
+      if(newPost.Message == "Success")
+      {
+        setAddPostModalVisible(false)
+      }
+      
+      console.log(newPost);
+      // Resto del código para manejar el nuevo post creado...
+    } catch (error) {
+      console.error('Error al crear el post:', error);
+    }
+
   };
 
   const selectImage = async () => {
@@ -34,7 +69,22 @@ const BottomBar = () => {
       });
       
       if (!pickerResult.cancelled) {
-        setSelectedImage(pickerResult.uri);
+        const image = pickerResult.assets[0].uri
+  
+        setSelectedImage(image);
+        const fileName = image.split("/").pop();
+        const uploadResp = await uploadToFirebase(image, fileName, (v) =>
+          console.log(`Percent: ${Number(v).toFixed(2)}%`)
+        );
+  
+        if (!uploadResp.downloadUrl) {
+          throw Error ("No se subió");
+        }
+  
+        // Actualiza el estado postData con la URL de descarga de la imagen
+        setPostData(prevData => ({ ...prevData, image: uploadResp.downloadUrl }));
+  
+        return uploadResp.downloadUrl;
       }
     } catch (error) {
       console.log('Error selecting image:', error);
@@ -50,7 +100,7 @@ const BottomBar = () => {
         <Icon name="search" size={25} color={route.name === 'Search' ? '#FF4500' : 'white'} />
       </TouchableOpacity>
       <View style={styles.addButtonContainer}>
-        <TouchableOpacity onPress={handleAddPost} style={styles.addButton}>
+        <TouchableOpacity onPress={handleAddPost1} style={styles.addButton}>
           <Icon name="add-circle" size={30} color="white" />
         </TouchableOpacity>
       </View>
@@ -91,6 +141,7 @@ const BottomBar = () => {
                 style={styles.largeInput}
                 placeholder="|"
                 multiline={true}
+                onChangeText={(text) => setPostData({ ...postData, description: text })}
               />
               <TouchableOpacity onPress={selectImage} style={styles.attachIconContainer}>
                 <Image source={require('../assets/icon/image.png')} style={styles.attachIcon} />
@@ -101,34 +152,46 @@ const BottomBar = () => {
               <View style={styles.additionalInfoContainer}>
                 <View style={styles.additionalInfoRow}>
                   <Text style={styles.additionalInfoText}>Título:</Text>
-                  <TextInput style={styles.additionalInfoInput} placeholder="Título" />
+                  <TextInput style={styles.additionalInfoInput} placeholder="Título" 
+                  onChangeText={(text) => setPostData({ ...postData, title: text })}
+                  />
                 </View>
 
                 <View style={styles.additionalInfoRow}>
                   <Text style={styles.additionalInfoText}>Género:</Text>
-                  <TextInput style={styles.additionalInfoInput} placeholder="Género" />
+                  <TextInput style={styles.additionalInfoInput} placeholder="Género" 
+                    onChangeText={(text) => setPostData({ ...postData, gender: text })}
+                  />
                 </View>
 
                 <View style={styles.additionalInfoRow}>
                   <Text style={styles.additionalInfoText}>Año:</Text>
-                  <TextInput style={styles.additionalInfoInput} placeholder="Año" />
+                  <TextInput style={styles.additionalInfoInput} placeholder="Año" 
+                  onChangeText={(text) => setPostData({ ...postData, year: text })}
+                  />
                 </View>
               </View>
 
               <View style={styles.iconColumn}>
                 <View style={styles.musicServiceIconContainer}>
                   <Image source={require('../assets/icon/spotify.png')} style={styles.musicServiceIcon} />
-                  <TextInput style={styles.musicServiceInput} placeholder="Spotify" />
+                  <TextInput style={styles.musicServiceInput} placeholder="Spotify"
+                    onChangeText={(text) => setPostData({ ...postData, link_spotify: text })}
+                  />
                 </View>
 
                 <View style={styles.musicServiceIconContainer}>
                   <Image source={require('../assets/icon/youtube.png')} style={styles.musicServiceIcon} />
-                  <TextInput style={styles.musicServiceInput} placeholder="YouTube" />
+                  <TextInput style={styles.musicServiceInput} placeholder="YouTube"
+                    onChangeText={(text) => setPostData({ ...postData, link_youtube: text })}
+                  />
                 </View>
 
                 <View style={styles.musicServiceIconContainer}>
                   <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
-                  <TextInput style={styles.musicServiceInput} placeholder="SoundCloud" />
+                  <TextInput style={styles.musicServiceInput} placeholder="SoundCloud" 
+                    onChangeText={(text) => setPostData({ ...postData, link_soundcloud: text })}
+                  />
                 </View>
               </View>
 
