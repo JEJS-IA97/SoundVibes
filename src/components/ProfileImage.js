@@ -53,7 +53,7 @@ const ProfileImage = ({ navigation }) => {
         );
 
         if (!uploadResp.downloadUrl) {
-          throw Error ("No se subió la wea");
+          throw Error ("No se subió");
         }
 
         const response = await updateUserImageProfile(uploadResp.downloadUrl);

@@ -13,7 +13,7 @@ const UserScreen = ({ navigation }) => {
   const isLogged = useSelector(selectIsLogged);
 
   const handleLogout = async () => {
-    dispatch(logout());
+    dispatch(await logout());
   };
 
   useEffect(() => {
