@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -6,16 +6,50 @@ import { Picker } from '@react-native-picker/picker';
 import ProfileImage from '../components/ProfileImage';
 import CustomModal from '../components/CustomModal'; 
 
+import { getUser } from '../api/User';
+import { getUserLogged } from '../api/Auth';
+import { updateUser } from '../api/User';
+
 const SignUpScreen2 = ({ navigation }) => {
   const [username, setUsername] = useState('')
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [genero, setGenero] = useState('');
-  const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
-  const [telefono, setTelefono] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthday, setBirthday] = useState(new Date());
+  const [phone, setPhone] = useState('');
+
+
+  const loadUserData = async () => {
+    try {
+      const response = await getUserLogged();
+      const userData = response.data.Data;
+      const userId = userData.id;   
+      
+      const userResponse = await getUser(userId);
+      const user = userResponse.Data;
+
+      setUsername(user.username);
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setGender(user.gender);
+      setPhone(user.phone);
+
+
+    } catch (error) {
+      console.log(error);
+      console.error('Error al cargar los datos del usuario:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -26,7 +60,7 @@ const SignUpScreen2 = ({ navigation }) => {
   };
 
   const handleDateConfirm = (date) => {
-    setFechaNacimiento(date);
+    setBirthday(date);
     hideDatePicker();
   };
 
@@ -36,12 +70,12 @@ const SignUpScreen2 = ({ navigation }) => {
   
 
   const validateInputs = () => {
-    if (!nombre.trim() || !apellido.trim() || !genero || !fechaNacimiento || !telefono.trim()) {
+    if (!firstName.trim() || !lastName.trim() || !gender || !birthday || !phone.trim()) {
       setErrorMessage('All fields are required');
       return false;
     }
 
-    if (!isValidPhoneNumber(telefono)) {
+    if (!isValidPhoneNumber(phone)) {
       setErrorMessage('Invalid phone number');
       return false;
     }
@@ -54,16 +88,35 @@ const SignUpScreen2 = ({ navigation }) => {
     navigation.goBack(); 
   };
   
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateInputs()) {
       return;
     }
-    const phonePattern = /^[0-9]+$/;
-    if (!phonePattern.test(telefono)) {
-      return;
+    
+    try {
+      const response = await getUserLogged();
+      const userId = response.data.Data.id; 
+
+      const updatedUserData = {
+        id: userId,
+        username,
+        firstName,
+        lastName,
+        gender,
+        birthday,
+        phone
+      };
+      
+      await updateUser(userId, updatedUserData);
+      console.log(updatedUserData);
+      setIsModalVisible(true);
+    } catch (error) {
+      console.log(error);
+      console.error('Error al actualizar el usuario:', error);
+      // Manejar el error según sea necesario
     }
-    setIsModalVisible(true);
   };
+  
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
@@ -103,8 +156,8 @@ const SignUpScreen2 = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Enter your first name"
                 placeholderTextColor="black"
-                value={nombre}
-                onChangeText={(text) => setNombre(text)}
+                value={firstName}
+                onChangeText={(text) => setFirstName(text)}
               />
             </View>
             <View style={styles.line}></View>
@@ -115,8 +168,8 @@ const SignUpScreen2 = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Enter your last name"
                 placeholderTextColor="black"
-                value={apellido}
-                onChangeText={(text) => setApellido(text)}
+                value={lastName}
+                onChangeText={(text) => setLastName(text)}
               />
             </View>
             <View style={styles.line}></View>
@@ -125,9 +178,9 @@ const SignUpScreen2 = ({ navigation }) => {
               <Text style={styles.label}>Gender</Text>
               <View style={styles.pickerContainer}>
                 <Picker
-                  selectedValue={genero}
+                  selectedValue={gender}
                   style={styles.input2}
-                  onValueChange={(itemValue) => setGenero(itemValue)}
+                  onValueChange={(itemValue) => setGender(itemValue)}
                 >
                   <Picker.Item label="Select your gender" value="" color="black" />
                   <Picker.Item label="Male" value="Male" />
@@ -142,7 +195,7 @@ const SignUpScreen2 = ({ navigation }) => {
               <TouchableOpacity onPress={showDatePicker}>
                 <View style={styles.datePickerContainer}>
                   <Text style={styles.datePickerText}>
-                    {fechaNacimiento ? fechaNacimiento.toLocaleDateString('es-ES') : 'Select your date of birth'}
+                    {birthday ? birthday.toLocaleDateString('es-ES') : 'Select your date of birth'}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -161,8 +214,8 @@ const SignUpScreen2 = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Enter your phone"
                 placeholderTextColor="black"
-                value={telefono}
-                onChangeText={(text) => setTelefono(text.replace(/[^0-9]/g, ''))}
+                value={phone}
+                onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))}
                 keyboardType="numeric"
               />
             </View>

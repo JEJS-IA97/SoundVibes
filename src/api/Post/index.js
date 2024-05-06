@@ -27,9 +27,23 @@ const getAllPosts = async () => {
     return data;
 };
 
+const getFeed = async () => {
+    axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${await getKey()}`;
+    const { data } = await axiosConfig.get(`${BASE}/feed`);
+    return data;
+};
+
+const setLikePost = async (postId) => { // Agrega postId como parámetro
+    axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${await getKey()}`;
+    const { data } = await axiosConfig.post(`${BASE}/like/${postId}`); // Utiliza postId
+    return data;
+};
+
 export {
     updatePostImage,
     create,
     getPostById,
-    getAllPosts
+    getAllPosts,
+    getFeed,
+    setLikePost
 };
