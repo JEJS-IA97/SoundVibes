@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Modal, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Share } from 'react-native';
+import { setLikePost } from '../api/Post';
+import { useSelector } from 'react-redux';
 
-const Feed = ({ description, title, year, genre, user, profileImage, image, time, navigation, onPress, spotify, youtube, soundcloud  }) => {
+import { selectUserLogged } from "../features/user/userSlice";
+
+const Feed = ({ postId, description, title, year, genre, user, userId, profileImage, image, time, navigation, onPress, spotify, youtube, soundcloud, likes }) => {
+
+  const userLogged = useSelector(selectUserLogged);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddCommentModalVisible, setAddCommentModalVisible] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -12,69 +19,77 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
   const likeButtonColor = liked ? 'red' : 'black';
 
   const handlePress = () => {
-    onPress(); 
+    onPress();
     setIsModalVisible(false);
   };
 
   const handleGoToPublication = () => {
-    setIsModalVisible(false); 
-    navigation.navigate('Post', { 
-      post: { title, year, genre, user, profileImage, image, time, spotify, youtube, soundcloud  } 
+    setIsModalVisible(false);
+    navigation.navigate('Post', {
+      post: { postId, title, year, genre, user, profileImage, image, time, spotify, youtube, soundcloud, likes }
     });
-  };
-
-  const userURLs = {
-    'John Lennon': {
-      spotify: 'https://open.spotify.com/intl-es/album/0ETFjACtuP2ADo6LFhL6HN?si=VQBHGpgvS-m_QUuTPJzHsA',
-      youtube: 'https://www.youtube.com/playlist?list=PLiN-7mukU_RE21iD9opzXGPC-VSWfu92Z',
-      soundcloud: 'https://soundcloud.com/user-79534953/the-beatles-abbey-road-full-album?si=1ccb676c1ce743439c609fdb9a66f9a8&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-    },
-    'Ariana Grande': {
-      spotify: 'https://open.spotify.com/intl-es/album/5EYKrEDnKhhcNxGedaRQeK?si=Y6Q90KAgQ26UnWpSFjJTPw',
-      youtube: 'https://youtube.com/playlist?list=PLT5kE8dBKiP495x-xlAXCQ7jlmHvGg5bu&feature=shared',
-      soundcloud: 'https://soundcloud.com/arianagrande/sets/eternal-sunshine-238265361?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-    },
-    'Taylor Swift': {
-      spotify: 'https://open.spotify.com/intl-es/album/151w1FgRZfnKZA9FEcg9Z3?si=FMq6EodoQCK1jG1HFq0dyw',
-      youtube: 'https://youtube.com/playlist?list=OLAK5uy_lw2-Cu3aRY2Tkfi28_79m05SkBF_tlufg&feature=shared',
-      soundcloud: 'https://soundcloud.com/taylorswiftofficial/sets/midnights-5?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-    },
-    'Harry Styles': {
-      spotify: 'https://open.spotify.com/intl-es/album/5r36AJ6VOJtp00oxSkBZ5h?si=372Vvuc2Stu0Hg5-0UAzcg',
-      youtube: 'https://youtube.com/playlist?list=PLxA687tYuMWgWbfUsntXDsn5HgOz90ka-&feature=shared',
-      soundcloud: 'https://soundcloud.com/harrystyles/sets/harrys-house-2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-    },
   };
 
   const handleServiceIconPress = (service) => {
-    const userServices = userURLs[user];
-    if (userServices) {
-      const serviceURL = userServices[service];
-      if (serviceURL) {
-        Linking.openURL(serviceURL);
-      } else {
-        console.log('URL no encontrada para este servicio');
-      }
+    let serviceURL = '';
+    switch (service) {
+      case 'spotify':
+        serviceURL = spotify;
+        break;
+      case 'youtube':
+        serviceURL = youtube;
+        break;
+      case 'soundcloud':
+        serviceURL = soundcloud;
+        break;
+      default:
+        console.log('Servicio no válido');
+    }
+
+    if (serviceURL) {
+      Linking.openURL(serviceURL);
     } else {
-      console.log('Servicios de usuario no encontrados');
+      console.log('URL no encontrada para este servicio');
     }
   };
 
-  const navigateToPostScreen = (post) => {
-    navigation.navigate('Post', { 
-      post: { 
-        title: post.title,
-        year: post.year,
-        genre: post.genre,
-        user: post.user,
-        profileImage: post.profileImage,
-        image: post.image,
-        time: post.time,
-        spotify: userURLs[post.user].spotify,
-        youtube: userURLs[post.user].youtube,
-        soundcloud: userURLs[post.user].soundcloud
-      } 
-    });
+  useEffect(() => {
+
+    console.log(userLogged);
+
+    const checkLikedStatus = async () => {
+      try {
+
+        const response = await setLikePost({ postId });
+        setLiked(response.data.liked);
+      } catch (error) {
+
+        if (error.response.status === 404) {
+
+          return;
+        }
+
+        console.error('Error al verificar el estado de like:', error);
+      }
+    };
+    checkLikedStatus();
+  }, [postId]);
+
+
+  const handleLike = async () => {
+    try {
+      if (!liked) {
+        // Llamar a la función setLikePost para dar like
+        await setLikePost(postId, 'like'); // Pasamos postId y 'like' como acción
+        setLiked(true);
+      } else {
+        // Llamar a la función setLikePost para quitar el like
+        await setLikePost(postId, 'unlike'); // Pasamos postId y 'unlike' como acción
+        setLiked(false);
+      }
+    } catch (error) {
+      console.error('Error al dar like:', error);
+    }
   };
 
   const toggleModal = () => {
@@ -90,31 +105,31 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
   };
 
   const renderOptions = () => {
-    if (user === 'Harry Styles' || user === 'Taylor Swift' || user === 'Ariana Grande') {
+    if (userId != userLogged.id) {
       return (
         <View style={styles.optionsContainer}>
           <TouchableOpacity onPress={() => console.log('Hide Post')}>
-              <Text>Hide Post</Text>
-            </TouchableOpacity>
-            <View style={styles.separator} />
-            <TouchableOpacity onPress={() => console.log('Copy Link')}>
-              <Text>Copy Link</Text>
-            </TouchableOpacity>
-            <View style={styles.separator} />
-            <TouchableOpacity onPress={() => console.log('Add to Favorites')}>
-              <Text>Add to Favorites</Text>
-            </TouchableOpacity>
-            <View style={styles.separator} />
-            <TouchableOpacity onPress={handlePress}>
-              <Text>Go to Publication</Text>
-            </TouchableOpacity>
-            <View style={styles.separator} />
-            <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
-            </TouchableOpacity>
+            <Text>Hide Post</Text>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity onPress={() => console.log('Copy Link')}>
+            <Text>Copy Link</Text>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity onPress={() => console.log('Add to Favorites')}>
+            <Text>Add to Favorites</Text>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity onPress={handlePress}>
+            <Text>Go to Publication</Text>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       );
-    } else if (user === 'John Lennon') {
+    } else if (userId == userLogged.id) {
       return (
         <View style={styles.optionsContainer}>
           <TouchableOpacity onPress={() => console.log('Edit Post')}>
@@ -124,10 +139,13 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
           <TouchableOpacity onPress={() => console.log('Delete Post')}>
             <Text>Delete Post</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={handlePress}>
+            <Text>Go to Publication</Text>
+          </TouchableOpacity>
           <View style={styles.separator} />
           <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
-            </TouchableOpacity>
+            <Text style={styles.closeButtonText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       );
     } else {
@@ -157,7 +175,7 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
           colors={['#87CEEB', '#FFA500', '#FF4500']}
           style={styles.profileImageContainer}
         >
-          <Image source={profileImage} style={styles.userPhoto} />
+          <Image source={{ uri: profileImage }} style={styles.userPhoto} />
         </LinearGradient>
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user}</Text>
@@ -168,7 +186,7 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
         </TouchableOpacity>
       </View>
       <Text style={styles.description}>{description}</Text>
-      <Image source={image} style={styles.rectangleImage} />
+      <Image source={{ uri: image }} style={styles.rectangleImage} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.details}>{year} | {genre}</Text>
       <View style={styles.socialIconsContainer}>
@@ -181,15 +199,12 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
         <TouchableOpacity style={styles.socialIcon} onPress={() => handleServiceIconPress('soundcloud')}>
           <Image source={require('../assets/icon/soundcloud.png')} style={styles.musicServiceIcon} />
         </TouchableOpacity>
-      </View>     
+      </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setLiked(!liked)}
-        >
-          <Icon name={likeButtonIcon} size={20} color={likeButtonColor} />
-          <Text style={styles.buttonText}>Like</Text>
+        <TouchableOpacity onPress={handleLike}>
+          <Icon name={liked ? 'heart' : 'heart-outline'} size={20} color={liked ? 'red' : 'black'} />
         </TouchableOpacity>
+        <Text style={styles.buttonText2}>Likes: {likes}</Text>
         <TouchableOpacity style={styles.button} onPress={handleAddComment}>
           <Icon name="chatbubble-outline" size={20} color="black" />
           <Text style={styles.buttonText}>Comment</Text>
@@ -198,7 +213,7 @@ const Feed = ({ description, title, year, genre, user, profileImage, image, time
           <Icon name="share-outline" size={20} color="black" />
           <Text style={styles.buttonText}>Share</Text>
         </TouchableOpacity>
-      </View>  
+      </View>
       <Modal
         animationType="slide"
         transparent={true}
@@ -279,7 +294,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   userInfo: {
-    flex: 1, 
+    flex: 1,
     marginLeft: 10,
   },
   optionsContainer: {
@@ -329,14 +344,15 @@ const styles = StyleSheet.create({
   buttonText: {
     marginLeft: 5,
   },
+  buttonText2: {
+    marginLeft: -50,
+  },
   description: {
     fontSize: 15,
     color: 'black',
     marginBottom: 5,
     textAlign: 'justify',
   },
-
-  
 });
 
 export default Feed;

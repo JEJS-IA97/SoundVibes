@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet,ScrollView, Modal, Text, TextInput, Image, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet, ScrollView, Modal, Text, TextInput, Image, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { listFiles, uploadToFirebase } from "../../firebaseConfig";
-
+import { getUserProfileImage } from '../api/Auth/index';
+import ProfileImage2 from '../components/ProfileImage2';
 import { create } from '../api/Post';
-
 
 const BottomBar = () => {
   const navigation = useNavigation();
   const [isAddPostModalVisible, setAddPostModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [profileImageLoaded, setProfileImageLoaded] = useState(false); 
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profileImage = await getUserProfileImage();
+        setLoading(false);
+        setProfileImageLoaded(true);
+      } catch (error) {
+        console.log('Error fetching user profile image:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const [postData, setPostData] = useState({
     description: '',
@@ -32,26 +49,21 @@ const BottomBar = () => {
   };
 
   const handleAddPost1 = () => {
-
     toggleAddPostModal();
-
   };
 
   const handleAddPost = async () => {
     try {
       const newPost = await create(postData);
       console.log('Success!');
-      if(newPost.Message == "Success")
-      {
-        setAddPostModalVisible(false)
+      if (newPost.Message === "Success") {
+        setAddPostModalVisible(false);
       }
-      
       console.log(newPost);
       // Resto del código para manejar el nuevo post creado...
     } catch (error) {
       console.error('Error al crear el post:', error);
     }
-
   };
 
   const selectImage = async () => {
@@ -69,22 +81,9 @@ const BottomBar = () => {
       });
       
       if (!pickerResult.cancelled) {
-        const image = pickerResult.assets[0].uri
+        const image = pickerResult.assets[0].uri;
   
         setSelectedImage(image);
-        const fileName = image.split("/").pop();
-        const uploadResp = await uploadToFirebase(image, fileName, (v) =>
-          console.log(`Percent: ${Number(v).toFixed(2)}%`)
-        );
-  
-        if (!uploadResp.downloadUrl) {
-          throw Error ("No se subió");
-        }
-  
-        // Actualiza el estado postData con la URL de descarga de la imagen
-        setPostData(prevData => ({ ...prevData, image: uploadResp.downloadUrl }));
-  
-        return uploadResp.downloadUrl;
       }
     } catch (error) {
       console.log('Error selecting image:', error);
@@ -129,12 +128,12 @@ const BottomBar = () => {
               <View style={styles.separator} />
 
               <View style={styles.header}>
-                <LinearGradient
+              <LinearGradient
                   colors={['#87CEEB', '#FFA500', '#FF4500']}
                   style={styles.profileImageContainer}
                 >
-                 <Image source={require('../assets/images/Jhon.jpeg')} style={styles.circularImage} />
-                </LinearGradient>
+                  <ProfileImage2 navigation={navigation} />
+                </LinearGradient> 
                 <Text>   | What are you listening to?</Text>
               </View>
               <TextInput
@@ -143,10 +142,14 @@ const BottomBar = () => {
                 multiline={true}
                 onChangeText={(text) => setPostData({ ...postData, description: text })}
               />
-              <TouchableOpacity onPress={selectImage} style={styles.attachIconContainer}>
+              <View style={styles.attachIconContainer}>
+              <TouchableOpacity onPress={selectImage} >
                 <Image source={require('../assets/icon/image.png')} style={styles.attachIcon} />
               </TouchableOpacity>
-
+              {selectedImage && 
+            <Image source={{ uri: selectedImage }} style={styles.selectedImageThumbnail} />
+          }
+              </View>
               <View style={styles.separator} />
 
               <View style={styles.additionalInfoContainer}>
@@ -216,6 +219,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+
+ 
+
   addButtonContainer: {
     width: 60,
     height: 60,
@@ -348,23 +354,37 @@ const styles = StyleSheet.create({
   attachIconContainer: {
     width: 20,
     height: 20,
-    paddingLeft: 265,
+    paddingLeft: 220,
+    flexDirection: 'row',
   },
 
   attachIcon: {
     width: 20,
     height: 20,
+    left: 10
   },
 
-  profileImageContainer: {
+  selectedImageThumbnail: {
     width: 35,
     height: 35,
-    borderRadius: 100,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
+    borderRadius: 5,
+    left:35,
+    top: -15
   },
+
+  userProfileImage: {
+    width: 33,
+    height: 33,
+    resizeMode: 'cover',
+    borderRadius: 18, 
+  },
+
+  profileImageContainer:{
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+  }
 
 });
 
