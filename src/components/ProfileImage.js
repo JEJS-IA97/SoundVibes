@@ -8,9 +8,16 @@ import { getUserProfileImage } from '../api/Auth/index';
 import { listFiles, uploadToFirebase } from "../../firebaseConfig";
 import { updateUserImageProfile } from '../api/User';
 
+import { getUserLogged } from '../api/Auth/index';
+import { getUser } from '../api/User';
+
 const ProfileImage = ({ navigation }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [username, setUsername] = useState('')
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -26,6 +33,29 @@ const ProfileImage = ({ navigation }) => {
     };
 
     fetchUserProfile();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      const response = await getUserLogged();
+      const userData = response.data.Data;
+      const userId = userData.id;   
+      
+      const userResponse = await getUser(userId);
+      const user = userResponse.Data;
+
+      setUsername(user.username);
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+
+
+    } catch (error) {
+      console.error('Error al cargar los datos del usuario:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadUserData();
   }, []);
 
   const selectImage = async () => {
@@ -53,7 +83,7 @@ const ProfileImage = ({ navigation }) => {
         );
 
         if (!uploadResp.downloadUrl) {
-          throw Error ("No se subió");
+          throw Error ("No se subió la wea");
         }
 
         const response = await updateUserImageProfile(uploadResp.downloadUrl);
@@ -90,8 +120,8 @@ const ProfileImage = ({ navigation }) => {
         <TouchableOpacity onPress={selectImage} style={styles.cameraButton}>
           <Icon name="camera" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.name}>John Lennon</Text>
-        <Text style={styles.username}>@johnlennon</Text>
+        <Text style={styles.name}>{firstName} {lastName}</Text>
+        <Text style={styles.username}>@{username}</Text>
       </View>
     </View>
   );

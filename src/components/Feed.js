@@ -8,13 +8,13 @@ import { useSelector } from 'react-redux';
 
 import { selectUserLogged } from "../features/user/userSlice";
 
-const Feed = ({ postId, description, title, year, genre, user, userId, profileImage, image, time, navigation, onPress, spotify, youtube, soundcloud, likes }) => {
+const Feed = ({ postId, description, title, year, genre, user, userId, profileImage, image, time, navigation, onPress, spotify, youtube, soundcloud, likes, isLiked }) => {
 
   const userLogged = useSelector(selectUserLogged);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddCommentModalVisible, setAddCommentModalVisible] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
   const likeButtonIcon = liked ? 'heart' : 'heart-outline';
   const likeButtonColor = liked ? 'red' : 'black';
 
@@ -53,40 +53,10 @@ const Feed = ({ postId, description, title, year, genre, user, userId, profileIm
     }
   };
 
-  useEffect(() => {
-
-    console.log(userLogged);
-
-    const checkLikedStatus = async () => {
-      try {
-
-        const response = await setLikePost({ postId });
-        setLiked(response.data.liked);
-      } catch (error) {
-
-        if (error.response.status === 404) {
-
-          return;
-        }
-
-        console.error('Error al verificar el estado de like:', error);
-      }
-    };
-    checkLikedStatus();
-  }, [postId]);
-
-
   const handleLike = async () => {
     try {
-      if (!liked) {
-        // Llamar a la función setLikePost para dar like
-        await setLikePost(postId, 'like'); // Pasamos postId y 'like' como acción
-        setLiked(true);
-      } else {
-        // Llamar a la función setLikePost para quitar el like
-        await setLikePost(postId, 'unlike'); // Pasamos postId y 'unlike' como acción
-        setLiked(false);
-      }
+      const resp = await setLikePost(postId);
+      setLiked(v => resp.OK === 1 && !v);
     } catch (error) {
       console.error('Error al dar like:', error);
     }

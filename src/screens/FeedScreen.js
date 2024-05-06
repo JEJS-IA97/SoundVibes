@@ -70,6 +70,7 @@ const FeedScreen = ({ navigation }) => {
       soundcloud={item.link_soundcloud}
       onPress={() => navigateToPostScreen(item)}
       likes={item.likes}
+      isLiked={item.isLiked}
       postId={item.id}
     />
   );

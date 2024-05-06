@@ -35,7 +35,7 @@ const getFeed = async () => {
 
 const setLikePost = async (postId) => { // Agrega postId como parámetro
     axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${await getKey()}`;
-    const { data } = await axiosConfig.post(`${BASE}/Like/${postId}`); // Utiliza postId
+    const { data } = await axiosConfig.post(`${BASE}/like/${postId}`); // Utiliza postId
     return data;
 };
 
