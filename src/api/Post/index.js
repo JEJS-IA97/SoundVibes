@@ -39,11 +39,19 @@ const setLikePost = async (postId) => { // Agrega postId como parámetro
     return data;
 };
 
+const getPostsByUserLogged = async () => {
+    axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${await getKey()}`;
+    const { data } = await axiosConfig.get(`${BASE}/user`);
+    return data;
+};
+
+
 export {
     updatePostImage,
     create,
     getPostById,
     getAllPosts,
     getFeed,
-    setLikePost
+    setLikePost,
+    getPostsByUserLogged
 };

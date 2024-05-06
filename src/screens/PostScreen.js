@@ -37,6 +37,14 @@ const PostScreen = ({ route, navigation, onPress }) => {
     content: '',
   });
 
+  const handleLike = async () => {
+    try {
+      const resp = await setLikePost(postId);
+      setLiked(v => resp.OK === 1 && !v);
+    } catch (error) {
+      console.error('Error al dar like:', error);
+    }
+  };
 
 
   const toggleModal = () => {
